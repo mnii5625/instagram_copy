@@ -1,0 +1,175 @@
+.main{
+    padding-top: 90px;
+    justify-content: space-around;
+}
+.main_left{
+    flex-direction: column;
+}
+.recently_story{
+    width: 600px;
+    max-width: 600px;
+    height: 120px;
+    background: white;
+    border: 1px solid gainsboro;
+    border-radius: 3px;
+    padding-left: 15px;
+    margin-bottom: 25px;
+}
+.story_user{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+}
+.new_story_gradation{
+    background-image: url("/images/gradation.jpg");
+    background-size: cover;
+    width: 61px;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin-bottom: 7px;
+}
+.post_new_story_gradation{
+    background-image: url("/images/gradation.jpg");
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+.story_img{
+    width: 57px;
+    height: 57px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+.story_name{
+    font-size: 10px;
+}
+.post{
+    border: 1px solid gainsboro;
+    background: white;
+    flex-direction: column;
+    border-radius: 3px;
+    width: 600px;
+    margin-bottom: 30px;
+}
+.post_header{
+    flex-direction: row;
+    width: 600px;
+    max-width: 600px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0 12px 0;
+    padding: 0 15px 0 15px;
+
+}
+.post_user_img{
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    border: 2px solid white;
+}
+.post_name{
+    font-size: 14px;
+    font-weight: bold;
+    width: 85%;
+}
+.post_images{
+}
+.post_image{
+    width: 100%;
+}
+.post_dots{
+    background-position: -285px -500px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+.post_info{
+    padding: 15px;
+    flex-direction: column;
+}
+.post_icons{
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.post_icons_left{
+    height: 100%;
+    align-items: center;
+}
+.post_like_icon{
+    background-position: -468px -473px;
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+}
+.post_comment_icon{
+    background-position: -416px -447px;
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+}
+.post_share_icon{
+    background-position: -520px -447px;
+    width: 24px;
+    height: 24px;
+
+}
+.post_bookmark_icon{
+    background-position: -26px -525px;
+    width: 24px;
+    height: 24px;
+}
+.post_comment_text{
+    font-size: 14px;
+}
+.post_a{
+    font-weight: bold;
+}
+.post_like{
+    margin-bottom: 10px;
+}
+.post_comments{
+    margin-bottom: 8px;
+}
+.post_comment_button{
+    font-weight: bold;
+    font-size: 14px;
+}
+.post_time{
+    font-size: 10px;
+    color: #8e8e8e;
+}
+.post_write_comment{
+    width: 100%;
+    height: 50px;
+    border-top: 1px solid gainsboro;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px 0 15px;
+}
+.post_emoticon{
+    width: 24px;
+    height: 24px;
+    background: red;
+}
+.post_write_comment_textarea{
+    border: none;
+    outline: none;
+    resize: none;
+    width: 87%;
+    font-size: 14px;
+
+}
+.post_write_comment_button{
+    color: #0095f6;
+    font-weight: bold;
+    font-size: 14px;
+}

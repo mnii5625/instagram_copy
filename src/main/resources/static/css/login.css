@@ -1,0 +1,253 @@
+
+.container{
+    height: 90%;
+    padding-top: 40px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+.iphone{
+    width: 454px;
+    height: 618px;
+    background-image: url("/images/iphone.png");
+}
+.img_box{
+    position: relative;
+    margin: 99px 0 0 151px;
+}
+.img{
+    position: absolute;
+    visibility: hidden;
+}
+.img_fadeIn{
+    visibility: visible;
+    animation: fadein 2s;
+    z-index: 99;
+}
+@keyframes fadein{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+.img_back{
+    visibility: visible;
+    z-index: 0;
+}
+.right_box{
+    flex-direction: column;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid gainsboro;
+    padding: 10px 0 10px 0;
+    background: white;
+    margin-bottom: 10px;
+}
+.login_box{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 348px;
+}
+.instagram_logo{
+    background-image: url("/images/Logo.png");
+    background-repeat: no-repeat;
+    background-position: 0 -130px;
+    margin: 22px 86.5px 12px 86.5px;
+    height: 51px;
+    width: 175px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+}
+.login_form{
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
+.input_box{
+    margin : 0 40px 6px 40px;
+    flex-direction: column;
+    border: 1px solid gainsboro;
+    background: #fafafa;
+    position: relative;
+    border-radius: 3px;
+    align-items: flex-start;
+    height: 38px;
+    justify-content: center;
+    width: 268px;
+}
+.top_input_box{
+    margin-top: 26px;
+}
+#id, #password{
+    width: auto;
+    border: none;
+    outline: none;
+    background: none;
+    padding: 9px 0 7px 8px;
+    font-size: 16px;
+}
+.placeholder{
+    font-size: 12px;
+    position: absolute;
+    left: 8px;
+    line-height: 36px;
+    pointer-events: none;
+    color: #8e8e8e;
+    transform-origin: left;
+    transition: 0.1s;
+}
+.transition_label{
+    transform: scale(0.83333) translateY(-10px);
+}
+.transition_input{
+    font-size: 12px!important;
+    padding: 14px 0 2px 8px!important;
+}
+.button_box{
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 16px 0 8px 0;
+    position: relative;
+}
+.login_ajax_loading{
+    position: absolute;
+}
+.submit_button{
+    width: 268px;
+    height: 30px;
+    border: none;
+    border-radius: 3px;
+    background-color: #0095f6;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+
+}
+.submit_button:disabled{
+    background-color: #b2dffc;
+}
+.or_box{
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 268px;
+    margin: 10px 0 0 0;
+}
+.or_line{
+    height: 1px;
+    width: 103px;
+    border: none;
+    background: gainsboro;
+
+}
+.or_or{
+    font-size: 13px;
+    color: #8e8e8e;
+}
+.fb_box{
+    margin: 30px 0 20px 0;
+    border: none;
+    width: 268px;
+    display: flex;
+    justify-content: center;
+    background: none;
+    cursor: pointer;
+
+}
+.fb_logo{
+    background-image: url("/images/Logo.png");
+    background-repeat: no-repeat;
+    background-position: -414px -259px;
+    height: 16px;
+    width: 16px;
+    position: relative;
+    top:3px;
+    margin-right: 8px;
+}
+.fb_text{
+    color: #385185;
+    font-size: 14px;
+    font-weight: 550;
+}
+.find_password{
+    color: #385185;
+    margin-top: 20px;
+    font-size: 12px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+.find_password_text{
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+    color: #385185;
+}
+.register_box{
+    height: 41px;
+    justify-content: center;
+    align-items: center;
+}
+.register_no{
+    font-size: 14px;
+    margin-right: 5px;
+}
+.register_go{
+    color: #0095f6;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
+}
+.download{
+    width: 135px;
+    height: 40px;
+}
+.download_text{
+    font-size: 14px;
+    justify-content: center;
+    margin: 10px 0 20px 0;
+}
+.download_img{
+    justify-content: center;
+
+}
+footer{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: auto 10px 0 10px ;
+}
+.ft_up{
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.ft_down{
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.ft_text{
+    font-size: 12px;
+    color: #8e8e8e;
+    margin: 0 8px 0 8px;
+}
+.ft_language{
+    border: none;
+    background: #fafafa;
+    color: #8e8e8e;
+}
+select option{
+    color: black;
+}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/header.css" rel="stylesheet">
+    <link href="css/default.css" rel="stylesheet">
+    <link href="images/instagramicon.png" type="image/x-icon" rel="shortcut icon">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/header.js"></script>
+
+    <title>Instagram</title>
+</head>
+<body>
+    <header>
+        <div class="header_line" style="align-items: center">
+            <button type="button" class="background_logo1 instagram_logo_header"></button>
+            <!-- 검색 -->
+            <div id = "search_box" class="search_box search">
+                <span id ="search_icon" class="background_logo1 search_icon search"></span>
+                <input id ="search_input" type="text" class="search_input search" placeholder="검색">
+                <div id ="search_x" class="background_logo1 input_x_icon search" style="display: none"></div>
+                <div id ="search_loading" class="ajax_loading_icon search" style="display: none"></div>
+
+                <div id="search_result" class="search_result search" style="display: none">
+                    <div class="search_result_box search">
+                        <div class="search_recently search">
+                            <div class="search_recently_header search">
+                                <span class="font_16 font_bold search" style="">최근 검색 항목</span>
+                                <button type="button" class="color_0095f6 font_bold font_14 search">모두 지우기</button>
+                            </div>
+                            <div class="search_recently_users_box search">
+                                <!-- 유저 박스 -->
+
+                                <a class="search_recently_user">
+                                    <img class="search_recently_user_img" src="images/GUGU.jpg">
+                                    <div class="search_recently_user_text">
+                                        <span class="font_bold">USER_ID</span>
+                                        <span class="color_8e8e8e">USER_NAME</span>
+                                    </div>
+                                    <button class="background_logo1 del_x_icon"></button>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="search_list"></div>
+                    </div>
+                    <div class="search_result_arrow"></div>
+                </div>
+
+            </div>
+
+            <div>
+                <a class="background_logo3 home_logo2 icons" disabled></a>
+                <a class="background_logo3 chat_logo icons"></a>
+                <button class="background_logo3 new_logo icons"></button>
+                <a class="background_logo3 explore_logo icons"></a>
+                <button class="background_logo3 heart_logo icons"></button>
+                <button class="icons"><img class="header_user_img" src="{{#profile_image}}{{profile_image}}{{/profile_image}}"></button>
+            </div>
+        </div>
+    </header>

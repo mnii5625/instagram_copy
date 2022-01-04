@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/signup.css" rel="stylesheet">
+    <link href="css/default.css" rel="stylesheet">
+    <link href="images/instagramicon.png" type="image/x-icon" rel="shortcut icon">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/signup.js"></script>
+    <title>Instagram</title>
+
+</head>
+<body>
+<div class="container">
+    <!-- 회원가입 페이지 -->
+    <form action="/signup" method="post">
+    <div class="box" id="page1" style="display: flex" >
+        <div class="background_logo1 instagram_logo">
+            instagram
+        </div>
+        <span class="info">친구들의 사진과 동영상을 보려면 가입하세요.</span>
+        <button class="fb_login">
+            <span class="fb_logo"></span>
+            Facebook으로 로그인
+        </button>
+        <div class="or_box">
+            <div class="or_line"></div>
+            <div class="or_or">또는</div>
+            <div class="or_line"></div>
+        </div>
+
+        <div class="input_box">
+            <span class="placeholder">휴대폰 번호 또는 이메일 주소</span>
+            <input type="text" id="id" name="id" class="text-input">
+            <input type="hidden" name = "email" id="email">
+            <input type="hidden" name = "phone" id="phone">
+            <div id = "id_c" class="background_logo1 check_logo" style="display: none"></div>
+            <div id = "id_x" class="background_logo1 x_logo" style="display: none"></div>
+        </div>
+        <div class="input_box">
+            <span class="placeholder">성명</span>
+            <input type="text" id="name" name="name" class="text-input">
+            <div id = "name_c" class="background_logo1 check_logo" style="display: none"></div>
+            <div id = "name_x" class="background_logo1 x_logo" style="display: none"></div>
+        </div>
+        <div class="input_box">
+            <span class="placeholder">사용자 이름</span>
+            <input type="text" id="insta_id" name="insta_id" class="text-input">
+            <div id = "insta_c" class="background_logo1 check_logo" style="display: none"></div>
+            <div id = "insta_x" class="background_logo1 x_logo" style="display: none"></div>
+        </div>
+        <div class="input_box">
+            <span class="placeholder">비밀번호</span>
+            <input type="password" id="password" name="password" class="text-input" style="width: 170px">
+            <button type="button" class="password_button" style="display:none">비밀번호 표시</button>
+        </div>
+        <div class="button_box">
+            <button type="button" class="submit_button" id="page1_button" disabled>가입</button>
+        </div>
+
+    </div>
+    <div class="box" id="page2" style="display: none">
+        <div class="background_logo2 birthday_logo">
+            birthday
+        </div>
+        <span class="font_16 " style="font-weight: bold; margin-bottom: 10px">생일 추가</span>
+        <span class="font_14">공개 프로필에 포함되지 않습니다.</span>
+        <span class="font_14 color_0095f6" style="margin-bottom: 10px">왜 생일 정보를 입력해야 하나요?</span>
+        <div class="select_box">
+            <select id="sel_month" class="sel_days" style="margin-right: 7px">
+            </select >
+            <select id="sel_date" class="sel_days" style="margin-right: 7px">
+            </select>
+            <select id="sel_year" class="sel_days">
+            </select>
+        </div>
+        <input type="hidden" name="birthday" id="birthday">
+        <span class="font_12 color_8e8e8e" style="margin-bottom: 15px">태어난 날짜를 입력해야 합니다.</span>
+        <span class="font_12 color_8e8e8e" style="text-align: center; width:290px; margin-bottom: 15px">비즈니스나 반려동물 등을 위한 계정인 경우에도 회원님의 생일 정보를 사용하세요</span>
+        <button type="button" class="submit_button" id="page2_button" disabled>다음</button>
+        <span class="font_14 color_0095f6" style="font-weight: bold; margin-bottom: 15px">돌아가기</span>
+
+
+    </div>
+    <div class="box" id="PhoneVerificationPage" style="display: none">
+        <div class="background_logo2 phone_logo">
+            phone
+        </div>
+        <span class="font_16 font_bold" style="margin-bottom: 15px">마지막 단계</span>
+        <span id = "phone_span" class="font_14 info_text" style="margin-bottom: 15px">01012345678번으로 전송된 6자리 코드를 입력하세요</span>
+        <div class="input_box" style="margin-bottom: 30px">
+            <span class="placeholder">######</span>
+            <input type="number" id="phone_text" name="phone_text" class="text-input">
+        </div>
+        <button type="button" class="submit_button" id = "phone_ver_button" disabled>확인</button>
+        <div style="align-items: flex-end; margin:10px 0 30px 0">
+            <a href="" class="color_0095f6 font_14 font_bold">휴대폰 번호 변경</a>
+            <div style="width:1px; height: 14px; background: black; margin: 0 5px 0 5px;"></div>
+            <a href="" class="color_0095f6 font_14 font_bold">새 코드 요청하기</a>
+        </div>
+
+    </div>
+    <div class="box" id="EmailVerificationPage" style="display: none">
+        <div class="background_logo2 email_logo">
+            email
+        </div>
+        <span class="font_16 font_bold" style="margin-bottom: 15px">인증 코드 입력</span>
+        <div>
+            <span id = "email_span" class="font_14 info_text" style="margin-bottom: 30px">mnii5625@gamil.com 주소로 전송된 인증 코드를 입력하세요.
+                <a href="" class="color_0095f6 font_14 font_bold">코드 재전송.</a>
+            </span>
+        </div>
+        <div class="input_box" style="margin-bottom: 15px">
+            <span class="placeholder">######</span>
+            <input type="number" id="email_text" name="email_text" class="text-input" maxlength="6">
+        </div>
+        <button type="button" class="submit_button" id="email_ver_button" style="margin-bottom: 15px" disabled>다음</button>
+        <a href="" class="color_0095f6 font_14 font_bold" style="margin-bottom: 10px">돌아가기</a>
+
+    </div>
+    <div class="box" id="TermsPage" style="display:none">
+        <span class="font_16 font_bold" style="margin: 30px 0 20px 0">이용 약관에 동의</span>
+        <span class="font_14 term_text">Instagram은 회원님의 개인 정보를 안전하게 보호합니다. 새 계정을 만들려면 모든 약관에 동의하세요.</span>
+        <div class="term_box">
+            <div class="term_line">
+                <span class="font_14">이용약관 3개에 모두 동의</span>
+                <input type="checkbox" id="termall">
+            </div>
+            <div class="line"></div>
+            <div class="term_line">
+                <div class="term_more_box">
+                    <span class="font_14">이용약관(필수)</span>
+                    <button class="term_more">더 알아보기</button>
+                </div>
+                <input type="checkbox" id="term1">
+            </div>
+            <div class="term_line">
+                <div class="term_more_box">
+                    <span class="font_14">데이터 정책(필수)</span>
+                    <button class="term_more">더 알아보기</button>
+                </div>
+                <input type="checkbox" id="term2">
+            </div>
+            <div class="term_line">
+                <div class="term_more_box">
+                    <span class="font_14">위치 기반 기능(필수)</span>
+                    <button class="term_more">더 알아보기</button>
+                </div>
+                <input type="checkbox" id="term3">
+            </div>
+        </div>
+        <button type = "submit" id = "term_button" class="submit_button" style="margin-top: 10px" disabled>다음</button>
+        <button class="term_more font_bold" style="margin-bottom: 20px">돌아가기</button>
+    </div>
+    </form>
+    <!-- -->
+    <div class="box">
+        <div class="register_box">
+            <span class="register_no">계정이 있으신가요?  </span>
+            <a href="/" class="register_go">로그인</a>
+        </div>
+    </div>
+    <div class="download_text">
+        앱을 다운로드하세요.
+    </div>
+    <div class="download_img">
+        <img style="margin-right:8px" class="download" src="images/apple_instagram.png">
+        <img class="download" src="images/android_instagram.png">
+    </div>
+    <button id="test">test</button>
+    <button id="test2">test</button>
+
+</div>
+<footer>
+    <div class="ft_up">
+        <span class="ft_text">Meta</span>
+        <span class="ft_text">소개</span>
+        <span class="ft_text">블로그</span>
+        <span class="ft_text">채용 정보</span>
+        <span class="ft_text">도움말</span>
+        <span class="ft_text">API</span>
+        <span class="ft_text">개인정보처리방침</span>
+        <span class="ft_text">약관</span>
+        <span class="ft_text">인기 계정</span>
+        <span class="ft_text">해시태그</span>
+        <span class="ft_text">위치</span>
+        <span class="ft_text">Instagram Lite</span>
+    </div>
+    <div class="ft_down">
+        <select class="ft_language">
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+            <option>한국어</option>
+        </select>
+        <span class="ft_text">© 2021 Instagram from MINGI</span>
+    </div>
+
+
+</footer>
+</body>
+</html>

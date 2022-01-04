@@ -1,0 +1,158 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #262626;
+}
+html, body{
+    width: 100%;
+    height: 100%;
+    background: #fafafa;
+}
+div{
+    display: flex;
+}
+button{
+    background: none;
+    border: none;
+}
+/* 폰트 */
+.font_12{
+    font-size: 12px;
+}
+.font_14{
+    font-size: 14px;
+}
+.font_16{
+    font-size: 16px;
+}
+.font_bold{
+    font-weight: bold;
+}
+/*   로고   */
+.background_logo1{
+    background-image: url("/images/Logo.png");
+    background-repeat: no-repeat;
+}
+.background_logo2{
+    background-image: url("/images/Logo2.png");
+    background-repeat: no-repeat;
+}
+.background_logo3{
+    background-image: url("/images/Logo3.png");
+    background-repeat: no-repeat;
+}
+.background_logo4{
+    background-image: url("/images/Logo4.png");
+    background-repeat: no-repeat;
+}
+.instagram_logo{
+    background-position: 0 -130px;
+    margin: 22px 86px 12px 86px;
+    height: 51px;
+    width: 175px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+}
+.instagram_logo_header{
+    background-position: -120px -225px;
+    height: 31px;
+    width: 107px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+}
+.birthday_logo{
+    background-position: 0 -105px;
+    margin: 22px 86px 12px 86px;
+    height: 100px;
+    width: 145px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+}
+.phone_logo{
+    background-position: -425px -215px;
+    margin: 22px 86px 12px 86px;
+    height: 80px;
+    width: 65px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+}
+.email_logo{
+    background-position: -425px -75px;
+    margin: 22px 86px 12px 86px;
+    height: 65px;
+    width: 95px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+}
+.check_logo{
+    background-position: -225px -333px;
+    height: 22px;
+    width: 22px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+    position: absolute;
+    right: 7px;
+}
+.x_logo{
+    background-position: -249px -333px;
+    height: 22px;
+    width: 22px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+    position: absolute;
+    right: 7px;
+}
+.input_x_icon{
+    background-position: -320px -335px;
+    height: 16px;
+    width: 16px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+}
+.del_x_icon{
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' xmlns='http://www.w3.org/2000/svg' fill='%238e8e8e' class='bi bi-x-lg'%3E%3Cpath d='M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    color: rgba(0,0,0,0%);
+    user-select: none;
+}
+.ajax_loading_icon{
+    background-image: url("/images/loading.gif");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+}
+.ajax_loading_icon_blue{
+    background-image: url("/images/loading_blue.gif");
+    background-repeat: no-repeat;
+    width: 28px;
+    height: 28px;
+}
+/* 색깔 */
+.color_fafafa{
+    color: #fafafa;
+}
+.color_gainsboro{
+    color: #DCDCDC;
+}
+.color_8e8e8e{
+    color: #8e8e8e;
+}
+.color_0095f6{
+    color: #0095f6;
+}
+a{
+    text-decoration: none;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button{
+    -webkit-appearance: none;
+}
+button{
+    cursor:pointer;
+}
+button:disabled{
+    cursor: default;
+}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/default.css" rel="stylesheet">
+    <link href="images/instagramicon.png" type="image/x-icon" rel="shortcut icon">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <title>Instagram</title>
+
+
+</head>
+<script type="text/javascript" src="js/firebase/firebase-app.js"></script>
+<script type="text/javascript" src="js/firebase/firebase-storage.js"></script>
+<script>
+    $(document).ready(function () {
+        const firebaseConfig = {
+            apiKey: "AIzaSyA_rgo6ZhaUasz98q8DnSpUZzDM_TZKKx8",
+            authDomain: "instagram-3aed2.firebaseapp.com",
+            projectId: "instagram-3aed2",
+            storageBucket: "instagram-3aed2.appspot.com",
+            messagingSenderId: "935666255239",
+            appId: "1:935666255239:web:bb554c3a9ffa95323cff22",
+            measurementId: "G-EB2JY4HS8R"
+        };
+        firebase.initializeApp(firebaseConfig);
+        let storageRef = firebase.storage().ref();
+        let spaceRef = storageRef.child("GUGU.jpg");
+        
+        /*let imageURL = spaceRef.getDownloadURL().then((url) => {
+            let xhr = new XMLHttpRequest();
+            xhr.responseType = 'blob';
+            xhr.onload = (event) => {
+                let blob = xhr.response;
+            };
+            xhr.open('GET',  url);
+            xhr.send();
+            let img = document.getElementById('img');
+            img.setAttribute('src', url);
+        })
+        .catch((error) =>{
+
+        });*/
+    });
+
+</script>
+<body>
+
+        <div style="flex-direction: column">
+            <div style="margin: 30px">
+                {{insta_id}}
+            </div>
+            <div>
+                {{email}}
+            </div>
+            <div>
+                {{phone}}
+            </div>
+            <div>
+                <input type="text" value="{{profile_image}}">
+            </div>
+            <div>
+                <img id="img">
+            </div>
+            <div>
+                <form action="/test/imgTest" method="post" enctype="multipart/form-data">
+                    <input type="file" name="imgTest">
+                    <button type="submit">이미지 테스트</button>
+                </form>
+            </div>
+            <div>
+                <img src="{{profile_image}}">
+            </div>
+            <img id = "user_img">
+
+
+        </div>
+
+
+
+
+
+
+
+</body>
+</html>
+

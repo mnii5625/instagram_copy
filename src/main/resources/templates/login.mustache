@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/login.css" rel="stylesheet">
+    <link href="css/default.css" rel="stylesheet">
+    <link href="images/instagramicon.png" type="image/x-icon" rel="shortcut icon">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+
+    <title>Instagram</title>
+</head>
+<body>
+    <div class="container">
+        <div class="iphone">
+            <div class="img_box">
+                <img class="img" src="images/one.jpg">
+                <img class="img" src="images/two.jpg">
+                <img class="img img_back" src="images/three.jpg">
+                <img class="img img_fadeIn" src="images/four.jpg">
+            </div>
+        </div>
+        <div class="right_box">
+            <div class="box">
+                <div class = "login_box">
+                    <div class="background_logo1 instagram_logo">
+                        instagram
+                    </div>
+                    <form class="login_form" action="/" method="post">
+                        <div class="input_box top_input_box">
+                            <span class="placeholder">전화번호, 사용자 이름 또는 이메일</span>
+                            <input type="text" id="id" name="id">
+                        </div>
+                        <div class="input_box">
+                            <span class="placeholder">비밀번호</span>
+                            <input type="password" id="password" name = "password">
+                        </div>
+                        <div class="button_box">
+                            <button id="login_button" type="button" class="submit_button">
+                                로그인
+                            </button>
+                            <div id = "login_ajax_loading" class="ajax_loading_icon_blue login_ajax_loading" style="display: none"></div>
+                        </div>
+
+                    </form>
+                    <div class="or_box">
+                        <div class="or_line"></div>
+                        <div class="or_or">또는</div>
+                        <div class="or_line"></div>
+                    </div>
+                    <button class="fb_box" onclick="location.href='/'">
+                        <span class="fb_logo"></span>
+                        <div class="fb_text">Facebook으로 로그인</div>
+                    </button>
+                    <span id = "error" class="font_14" style="width:268px; color: red; text-align: center" ></span>
+                    <div class="find_password">
+                        <a href="" class="find_password_text">비밀번호를 잊으셨나요?</a>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="register_box">
+                    <span class="register_no">계정이 없으신가요?  </span>
+                    <a href="/signup" class="register_go">가입하기</a>
+                </div>
+            </div>
+            <div class="download_text">
+                앱을 다운로드하세요.
+            </div>
+            <div class="download_img">
+                <img style="margin-right:8px" class="download" src="images/apple_instagram.png">
+                <img class="download" src="images/android_instagram.png">
+            </div>
+        </div>
+    </div>
+
+    <span name="errorMessage"></span>
+    <footer>
+        <div class="ft_up">
+            <span class="ft_text">Meta</span>
+            <span class="ft_text">소개</span>
+            <span class="ft_text">블로그</span>
+            <span class="ft_text">채용 정보</span>
+            <span class="ft_text">도움말</span>
+            <span class="ft_text">API</span>
+            <span class="ft_text">개인정보처리방침</span>
+            <span class="ft_text">약관</span>
+            <span class="ft_text">인기 계정</span>
+            <span class="ft_text">해시태그</span>
+            <span class="ft_text">위치</span>
+            <span class="ft_text">Instagram Lite</span>
+        </div>
+        <div class="ft_down">
+            <select class="ft_language">
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+                <option>한국어</option>
+            </select>
+            <span class="ft_text">© 2021 Instagram from MINGI</span>
+        </div>
+
+
+    </footer>
+
+</body>
+</html>
