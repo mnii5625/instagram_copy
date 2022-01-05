@@ -33,6 +33,9 @@ public class Response {
     public ResponseEntity<?> success(String msg){
         return success(Collections.emptyList(), msg, HttpStatus.OK);
     }
+    public ResponseEntity<?> success(String msg, HttpStatus status){
+        return success(Collections.emptyList(), msg, status);
+    }
     public ResponseEntity<?> fail(Object data, String msg, HttpStatus status){
         Body body = Body.builder()
                 .state(status.value())

@@ -1,8 +1,8 @@
 {{>layouts/header}}
-<link href="css/main.css" rel="stylesheet">
-<script type="text/javascript" src="js/main.js"></script>
+<link href="css/post.css" rel="stylesheet">
+<script type="text/javascript" src="js/post.js"></script>
 <div class="main">
-    <div class="main_left">
+    <div class="main_left" id = "main_left">
         <div class="recently_story">
             <button class="story_user">
                 <div class="new_story_gradation">
@@ -26,6 +26,7 @@
                 <span class="story_name">GUGU</span>
             </button>
         </div>
+        <!-- post -->
         <div class="post">
             <div class="post_header">
                 <div class="post_new_story_gradation">
@@ -48,13 +49,29 @@
                     <div class="background_logo2 post_bookmark_icon"></div>
                 </div>
                 <div class="post_like">
-                    <span class="font_14"><a class="post_a">USERNAME</a>님 <button class="post_comment_button">여러 명</button>이 좋아합니다 </span>
+                    <a class="post_insta" href="">USERNAME</a>님이 좋아합니다
+                </div>
+                <div class="post_comments">
+                    <span>
+                        <a class="post_insta">ㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎ</a>
+                    </span>
+                    <span>
+                    꾸꾸 졸라 귀엽당
+                        <a class="tag" href="">@ming._.i</a>
+                        ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
+                    </span>
 
                 </div>
                 <div class="post_comments">
-                    <span class="font_14">
-                    <a class="post_a">USERNAME</a>&nbsp;<span class="font_14">꾸꾸 졸라 귀엽당</span><button>더보기</button>
+                    <span>
+                        <a class="post_insta">ㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎ</a>
                     </span>
+                    <span>
+                    꾸꾸 졸라 귀엽당
+                        <a class="tag" href="">@ming._.i</a>
+                        ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
+                    </span>
+
                 </div>
                 <div class="post_time">
                     n시간 전
@@ -65,8 +82,8 @@
                 <textarea placeholder="댓글 달기..." class="post_write_comment_textarea"></textarea>
                 <button class="post_write_comment_button">게시</button>
             </div>
-
         </div>
+        <!-- -->
 
     </div>
     <div class="main_right" style="display: none">

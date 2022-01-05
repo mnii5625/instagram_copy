@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,7 +14,8 @@ import lombok.Setter;
 public class Verification {
 
     private String code;
-    private String emailorphone;
+    private String EmailOrPhone;
     private String method;
+    private Date time;
 
 }

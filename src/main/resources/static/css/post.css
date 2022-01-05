@@ -130,14 +130,20 @@
 .post_comment_text{
     font-size: 14px;
 }
-.post_a{
+.tag{
+    color: #00376B;
+}
+.post_insta{
     font-weight: bold;
 }
 .post_like{
     margin-bottom: 10px;
+    font-size: 14px;
 }
 .post_comments{
     margin-bottom: 8px;
+    display: block;
+    font-size: 14px;
 }
 .post_comment_button{
     font-weight: bold;

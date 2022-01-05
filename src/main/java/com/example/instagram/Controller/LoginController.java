@@ -27,7 +27,7 @@ public class LoginController {
     @GetMapping("/")
     public String LoginPage(HttpServletRequest request, Authentication auth){
         if(auth != null){
-            return "forward:/main";
+            return "forward:/post";
         }
         return "login";
     }

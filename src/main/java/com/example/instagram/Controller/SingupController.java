@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -125,7 +126,7 @@ public class SingupController{
         message.setText("인증번호 : " + key);
         javaMailSender.send(message);
         //인증번호 db 저장
-        Verification ver = new Verification(key, email, "email");
+        Verification ver = new Verification(key, email, "email", new Date());
         verificationRepository.setVerification(ver);
     }
 
@@ -138,7 +139,7 @@ public class SingupController{
         key += numIndex;
         //문자 보내기
         SMS.sendSMS(phone, key);
-        Verification ver = new Verification(key, phone, "phone");
+        Verification ver = new Verification(key, phone, "phone", new Date());
         verificationRepository.setVerification(ver);
         return "login";
 

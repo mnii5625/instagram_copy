@@ -1,15 +1,19 @@
 package com.example.instagram.test;
 
 import com.example.instagram.Entity.Request.UserRequest;
+import com.example.instagram.Entity.Response.Response;
 import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
 import com.example.instagram.Jwt.JwtTokenProvider;
+import com.example.instagram.Repository.PostRepository;
+import com.example.instagram.Repository.VerificationRepository;
 import com.example.instagram.Service.UserService;
 import com.google.api.Http;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -24,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -37,6 +42,9 @@ public class Test {
     @Value("${images.path}")
     private String imgPath;
     private final UserService userService;
+    private final VerificationRepository verificationRepository;
+    private final PostRepository postRepository;
+    private final Response response;
 
     /*@PostMapping("/test/login")
     public ResponseEntity<?> testLogin(UserRequest.Login login, HttpServletRequest request) throws ExecutionException, InterruptedException {
@@ -71,10 +79,19 @@ public class Test {
         file.transferTo(newfile);
         /*File target = new File(uploadPath, filename);
         FileCopyUtils.copy(file.getBytes(), target);*/
+    }
+    @PostMapping("/test/postTest")
+    @ResponseBody
+    public ResponseEntity<?> postTest(){
+        try{
+            return postRepository.getPost("ming._.i", new Date(), 3);
+        }catch (Exception e){
+            return response.fail(e.toString(), HttpStatus.BAD_REQUEST);
+        }
 
     }
 
-    @PostMapping("api/test")
+    /*@PostMapping("api/test")
     @ResponseBody
     public testDTO apiTest(){
         log.info("POST요청");
@@ -90,5 +107,10 @@ public class Test {
         log.info(test.toString());
         t.add(test);
         return t;
+    }*/
+    @GetMapping("api/test")
+    public String DateTest(){
+        verificationRepository.test();
+        return "";
     }
 }
