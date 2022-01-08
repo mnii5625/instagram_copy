@@ -13,6 +13,14 @@ public class UserRequest {
     @Getter
     @Setter
     @ToString
+    public static class User{
+        private String insta;
+        private String profile_image;
+        private String name;
+    }
+    @Getter
+    @Setter
+    @ToString
     public static class Login{
         private String id;
         private String password;

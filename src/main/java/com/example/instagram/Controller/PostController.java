@@ -51,4 +51,9 @@ public class PostController {
             return response.fail(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/header/search")
+    @ResponseBody
+    public ResponseEntity<?> Search(@RequestParam("word") String word){
+        return response.success("성공!", HttpStatus.OK);
+    }
 }

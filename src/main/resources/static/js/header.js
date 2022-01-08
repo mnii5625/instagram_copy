@@ -11,6 +11,7 @@ $(document).ready(function () {
 });
 
 function search_focus(){
+    $("#search_result").removeAttr("style");
     $("#search_icon").css("display","none");
     $("#search_input").css("color", "black");
     $("#search_x").css("display", "block");
@@ -20,10 +21,14 @@ function search_blur(){
     $("#search_icon").css("display","block");
     $("#search_input").css("color", "#8e8e8e");
     $("#search_x").css("display", "none");
-    $("#search_result").css("display","none");
+    $("#search_result").animate({top: 38, opacity: "0"}, 100);
+
+
+    //$("#search_result").css("display","none");
 }
-function search(){
-    $.ajax({
+function search(ajax){
+    ajax.abort();
+    let xhr = $.ajax({
         url:"",
         type : "POST",
         dataType : "json",
@@ -40,5 +45,6 @@ function search(){
         }
 
     })
+    return xhr;
     //ajax로 검색 구현
 }

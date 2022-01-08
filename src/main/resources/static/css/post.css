@@ -79,10 +79,68 @@
     font-weight: bold;
     width: 85%;
 }
-.post_images{
+.post_image_slider{
+    display: block;
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+    position : relative;
+    margins: 0 auto;
+}
+.post_image_slider ul{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    list-style:none;
+    position: relative;
+    margin-left: 0;
+}
+.post_image_slider li{
+    height: 100%;
+}
+.post_image_slider li img{
+    width: 598px;
+    height: 100%;
+    object-fit: cover;
 }
 .post_image{
     width: 100%;
+    justify-content: center;
+    position: relative;
+}
+
+.post_right_button, .post_left_button{
+    background-image: url("/images/Logo.png");
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 3;
+    box-shadow: 0 0 5px 1px rgba(80, 80, 80, 0.1);
+}
+.post_left_button{
+    background-position: -133px -101px;
+    left:10px;
+    top:285px;
+}
+.post_right_button{
+    background-position: -165px -101px;
+    right: 10px;
+    top:285px;
+}
+.post_images_dots{
+    position: absolute;
+    bottom : -15px;
+    justify-content: space-between;
+}
+.post_images_dot{
+    width: 6px;
+    height: 6px;
+    background-color: #a8a8a8;
+    border-radius: 50%;
+    margin-right: 4px;
+
 }
 .post_dots{
     background-position: -285px -500px;
@@ -155,7 +213,7 @@
 }
 .post_write_comment{
     width: 100%;
-    height: 50px;
+    min-height: 50px;
     border-top: 1px solid gainsboro;
     justify-content: space-between;
     align-items: center;
@@ -172,6 +230,10 @@
     resize: none;
     width: 87%;
     font-size: 14px;
+    height: 18px;
+    line-height: 18px;
+    overflow-y: hidden;
+
 
 }
 .post_write_comment_button{

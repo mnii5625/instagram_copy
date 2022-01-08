@@ -58,7 +58,7 @@ public class UserRepository {
             return false;
         }
     }
-    //로그인 할 때 사용
+    // 로그인
     public UserDetails findUser(String username){
         UserDetails user = null;
         try{
@@ -99,12 +99,13 @@ public class UserRepository {
         return user;
 
     }
-    //회원가입 할 때 사용
+    // 회원가입
     public void saveUser(User user) throws Exception{
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
 
         ApiFuture<WriteResult> future = db.collection(COLLECTION_User).document().set(user);
     }
+
 
 }

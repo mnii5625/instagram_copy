@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,7 +29,8 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
+    //private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;    // 7일
 
     private UserRepository userRepository;

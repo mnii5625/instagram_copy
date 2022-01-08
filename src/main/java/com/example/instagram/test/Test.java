@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,10 +25,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +50,7 @@ public class Test {
     private final VerificationRepository verificationRepository;
     private final PostRepository postRepository;
     private final Response response;
+    private final ResourceLoader resourceLoader;
 
     /*@PostMapping("/test/login")
     public ResponseEntity<?> testLogin(UserRequest.Login login, HttpServletRequest request) throws ExecutionException, InterruptedException {
