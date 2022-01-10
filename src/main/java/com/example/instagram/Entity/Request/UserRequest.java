@@ -1,6 +1,8 @@
 package com.example.instagram.Entity.Request;
 
+import com.example.instagram.Entity.UserDetails;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,10 +15,16 @@ public class UserRequest {
     @Getter
     @Setter
     @ToString
+    @NoArgsConstructor
     public static class User{
         private String insta;
         private String profile_image;
         private String name;
+        public User(UserDetails u){
+            this.insta = u.getInsta_id();
+            this.profile_image = u.getProfile_image();
+            this.name = u.getName();
+        }
     }
     @Getter
     @Setter

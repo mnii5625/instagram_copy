@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 

@@ -6,6 +6,7 @@ import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
 import com.example.instagram.Jwt.JwtTokenProvider;
 import com.example.instagram.Repository.PostRepository;
+import com.example.instagram.Repository.SearchRepository;
 import com.example.instagram.Repository.VerificationRepository;
 import com.example.instagram.Service.UserService;
 import com.google.api.Http;
@@ -51,6 +52,7 @@ public class Test {
     private final PostRepository postRepository;
     private final Response response;
     private final ResourceLoader resourceLoader;
+    private final SearchRepository searchRepository;
 
     /*@PostMapping("/test/login")
     public ResponseEntity<?> testLogin(UserRequest.Login login, HttpServletRequest request) throws ExecutionException, InterruptedException {
@@ -95,6 +97,16 @@ public class Test {
             return response.fail(e.toString(), HttpStatus.BAD_REQUEST);
         }
 
+    }
+    @PostMapping("test/deleted")
+    @ResponseBody
+    public ResponseEntity<?> del(){
+        return searchRepository.delRecentlySearch("ming._.i", "mmiinini");
+    }
+    @PostMapping("test/search")
+    @ResponseBody
+    public ResponseEntity<?> ser(@RequestParam("word") String word){
+        return searchRepository.Search(word);
     }
 
     /*@PostMapping("api/test")

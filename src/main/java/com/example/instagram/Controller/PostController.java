@@ -3,6 +3,7 @@ package com.example.instagram.Controller;
 import com.example.instagram.Entity.Response.Response;
 import com.example.instagram.Entity.UserDetails;
 import com.example.instagram.Repository.PostRepository;
+import com.example.instagram.Repository.SearchRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,7 @@ public class PostController {
     @Value("${images.path}")
     private String imgPath;
     private final PostRepository postRepository;
+    private final SearchRepository searchRepository;
     private final Response response;
 
     @GetMapping("/post")
@@ -54,6 +56,25 @@ public class PostController {
     @PostMapping("/header/search")
     @ResponseBody
     public ResponseEntity<?> Search(@RequestParam("word") String word){
-        return response.success("성공!", HttpStatus.OK);
+        return searchRepository.Search(word);
     }
+    @PostMapping("/header/recently")
+    @ResponseBody
+    public ResponseEntity<?> Recently(Authentication auth){
+        UserDetails user = (UserDetails) auth.getPrincipal();
+        return searchRepository.getRecentlySearch(user.getInsta_id());
+    }
+    @PostMapping("/header/recently/delete")
+    public ResponseEntity<?> Delete(Authentication auth, @RequestParam("insta") String insta){
+        UserDetails user = (UserDetails)  auth.getPrincipal();
+        log.info(user.getInsta_id() + " " + insta);
+        return searchRepository.delRecentlySearch(user.getInsta_id(), insta);
+    }
+    @PostMapping("/header/recently/deleteAll")
+    public ResponseEntity<?> DeleteAll(Authentication auth){
+        UserDetails user = (UserDetails)  auth.getPrincipal();
+        log.info(user.getInsta_id());
+        return searchRepository.delAllRecentlySearch(user.getInsta_id());
+    }
+
 }

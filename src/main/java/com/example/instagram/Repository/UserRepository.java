@@ -1,5 +1,6 @@
 package com.example.instagram.Repository;
 
+import com.example.instagram.Entity.Request.UserRequest;
 import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
 import com.google.api.core.ApiFuture;
@@ -105,6 +106,22 @@ public class UserRepository {
         user.setPassword(encoder.encode(user.getPassword()));
 
         ApiFuture<WriteResult> future = db.collection(COLLECTION_User).document().set(user);
+    }
+    public UserRequest.User getUserByInsta(String insta){
+        try{
+            ApiFuture<QuerySnapshot> apiFuture = db.collection(COLLECTION_User).whereEqualTo("insta_id", insta).get();
+            List<QueryDocumentSnapshot> documents = apiFuture.get().getDocuments();
+            if(documents.size() > 0) {
+                DocumentSnapshot doc = documents.get(0);
+                return new UserRequest.User(doc.toObject(UserDetails.class));
+            }
+            else{
+                return null;
+            }
+        }catch (Exception e){
+            log.info(e.toString());
+        }
+        return null;
     }
 
 

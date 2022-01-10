@@ -37,7 +37,7 @@ public class PostRepository {
         ApiFuture<QuerySnapshot> postSnapShot = postQuery.get();
         List<UserRequest.Post> posts = new ArrayList<>();
         if(postSnapShot.get().getDocuments().size() == 0){
-            response.success("더 이상 불러올 게시글이 없습니다.", HttpStatus.NO_CONTENT);
+            return response.success("더 이상 불러올 게시글이 없습니다.", HttpStatus.NO_CONTENT);
         }
         for (DocumentSnapshot postDoc : postSnapShot.get().getDocuments()){
             UserRequest.Post post = postDoc.toObject(UserRequest.Post.class);
@@ -46,6 +46,22 @@ public class PostRepository {
         }
 
         return response.success(posts, "불러오기", HttpStatus.OK);
+    }
+    public List<UserRequest.Post> getPost(String id){
+        List<UserRequest.Post> posts = new ArrayList<>();
+        try{
+            CollectionReference Collection = db.collection(COLLECTION_POST);
+            Query query = Collection.whereEqualTo("insta", id).orderBy("date");
+            ApiFuture<QuerySnapshot> Snapshot = query.get();
+
+            for(DocumentSnapshot doc : Snapshot.get().getDocuments()){
+                UserRequest.Post post = doc.toObject(UserRequest.Post.class);
+                posts.add(post);
+            }
+        }catch (Exception e){
+            log.info(e.toString());
+        }
+        return posts;
     }
     public List<UserRequest.Comment> getComment(String postId) throws ExecutionException, InterruptedException {
         // 반환할 List 생성

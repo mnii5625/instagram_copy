@@ -9,7 +9,7 @@
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/header.js"></script>
 
-    <title>Instagram</title>
+    <title>Minstagram</title>
 </head>
 <body>
     <header>
@@ -20,32 +20,41 @@
                 <span id ="search_icon" class="background_logo1 search_icon search"></span>
                 <input id ="search_input" type="text" class="search_input search" placeholder="검색">
                 <div id ="search_x" class="background_logo1 input_x_icon search" style="display: none"></div>
-                <div id ="search_loading" class="ajax_loading_icon search" style="display: none"></div>
-
+                <div id ="search_loading" class="ajax_loading_icon_fafafa search" style="display: none"></div>
+                <!-- -->
                 <div id="search_result" class="search_result search" style="display: none">
+                    <div class="search_result_arrow"></div>
                     <div class="search_result_box search">
-                        <div class="search_recently search">
+                        <div id = "search_recently" class="search_recently search" style="display: flex">
                             <div class="search_recently_header search">
                                 <span class="font_16 font_bold search" style="">최근 검색 항목</span>
-                                <button type="button" class="color_0095f6 font_bold font_14 search">모두 지우기</button>
+                                <button type="button" class="color_0095f6 font_bold font_14 search" onclick="delRecentlyAll(this)">모두 지우기</button>
                             </div>
-                            <div class="search_recently_users_box search">
-                                <!-- 유저 박스 -->
-
-                                <a class="search_recently_user">
+                            <!-- 유저 박스 -->
+                            <div id = "recently_Users" class="search_recently_users_box search">
+                                <div id = "search_no_recently" class="search_no_recently" style="display: none">최근 검색 내역 없음.</div>
+                                <!--
+                                <a class="search_recently_user" href="">
                                     <img class="search_recently_user_img" src="images/GUGU.jpg">
                                     <div class="search_recently_user_text">
                                         <span class="font_bold">USER_ID</span>
                                         <span class="color_8e8e8e">USER_NAME</span>
                                     </div>
-                                    <button class="background_logo1 del_x_icon"></button>
+                                    <button class="background_logo1 del_x_icon search"></button>
                                 </a>
-
+                                -->
                             </div>
+                            <!-- -->
                         </div>
-                        <div class="search_list"></div>
+                        <div id="search_list" class="search_list search" style="display: none"></div>
+                        <div id="search_no_list" style="display: flex; justify-content: center; align-items: center; display: none; width: 100%; color: #8e8e8e; font-size: 14px">
+                            검색 결과가 없습니다.
+                        </div>
+                        <div id="search_loading_box" class="search_ajax"style="display:none;">
+                            <div  class="ajax_loading_icon"></div>
+                        </div>
                     </div>
-                    <div class="search_result_arrow"></div>
+
                 </div>
 
             </div>

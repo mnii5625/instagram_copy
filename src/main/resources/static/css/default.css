@@ -121,11 +121,17 @@ button{
 .ajax_loading_icon{
     background-image: url("/images/loading.gif");
     background-repeat: no-repeat;
-    width: 16px;
-    height: 16px;
+    width: 28px;
+    height: 28px;
 }
 .ajax_loading_icon_blue{
     background-image: url("/images/loading_blue.gif");
+    background-repeat: no-repeat;
+    width: 28px;
+    height: 28px;
+}
+.ajax_loading_icon_fafafa{
+    background-image: url("/images/loading_fafafa.gif");
     background-repeat: no-repeat;
     width: 28px;
     height: 28px;

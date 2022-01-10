@@ -65,14 +65,14 @@ public class UserService {
         try {
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-            log.info("authenticatiton : " + authentication.toString());
+            log.info("authentication : " + authentication.toString());
             log.info("authentication get name: " + authentication.getName());
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
             redisTemplate.opsForValue()
                     .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-            CookieUtil.create(res, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, -1, "localhost");
-            CookieUtil.create(res, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, -1, "localhost");
+            CookieUtil.create(res, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, -1, "minstagram.kro.kr");
+            CookieUtil.create(res, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, -1, "minstagram.kro.kr");
             return response.success(
                     tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
         } catch (InternalAuthenticationServiceException e) {

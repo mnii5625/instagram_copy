@@ -91,7 +91,7 @@ function setPost(data){
             postImageSlider.append(input);
             let ul = $('<ul class="post_images"></ul>');
                 for(let i = 0; i<data.images.length; i++){
-                    ul.append('<li><img src="http://localhost:8080/static/images/' + data.images[i] + '" ></li>');
+                    ul.append('<li><img src="http://minstagram.kro.kr/static/images/' + data.images[i] + '" ></li>');
                 }
             postImageSlider.append(ul);
             if(data.images.length != 1){

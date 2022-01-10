@@ -84,7 +84,7 @@ public class JwtTokenProvider {
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-        log.info(claims.toString());
+        //log.info(claims.toString());
         UserDetails principal = UserDetails.builder()
                 .insta_id(claims.getSubject())
                 .phone(claims.get("phone", String.class))

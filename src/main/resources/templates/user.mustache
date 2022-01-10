@@ -1,0 +1,105 @@
+{{>layouts/header}}
+<link href="css/user.css" rel="stylesheet">
+<div class="container">
+    <div class="user">
+        <img class ="user_img" src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+        <div class="user_info">
+            <div class="user_top">
+                <span style="font-size: 28px; font-weight: lighter; margin-right: 20px">{{insta}}</span>
+                <a href="#" class="user_edit">프로필 편집</a>
+                <button class="user_option">톱니</button>
+            </div>
+            <div class="user_middle">
+                <span class="font_16" style="margin-right: 40px">
+                    <span>게시물</span>&nbsp;<span class="font_bold">{{postCount}}</span>
+                </span>
+                <span class="font_16" style="margin-right: 40px">
+                    <span>팔로워</span>&nbsp;<span class="font_bold">0</span>
+                </span>
+                <span class="font_16" style="margin-right: 40px">
+                    <span>팔로우</span>&nbsp;<span class="font_bold">0</span>
+                </span>
+
+            </div>
+            <div class="user_bottom">
+            {{bio}}
+            </div>
+        </div>
+    </div>
+    <div class="user_post">
+        <div class="navigation font_12" style="">
+            <button class="nav nav_selected" style="margin-right: 55px;">
+                <div class="background_logo1 post_icon_selected"></div>&nbsp;
+                <span class="font_bold">게시물</span>
+            </button>
+            <button class="nav" style="margin-right: 55px;">
+                <div class="background_logo1 bookmark_icon"></div>&nbsp;
+                <span style="color: #8e8e8e">저장됨</span>
+            </button>
+            <button class="nav">
+                <div class="background_logo1 tagged_icon"></div>&nbsp;
+                <span style="color: #8e8e8e">태그됨</span>
+            </button>
+        </div>
+        <div class="posts">
+            <div class="post_line">
+                <div class="post">
+                    <a class="post_a" href="#">
+                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+                        <div class="hover" style="display:none"></div>
+                    </a>
+                </div>
+                <div class="post">
+                    <a class="post_a" href="#">
+                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+                        <div class="hover" style="display:none"></div>
+                    </a>
+                </div>
+                <div class="post">
+                    <a class="post_a" href="#">
+                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+                        <div class="hover" style="display:none"></div>
+                    </a>
+                </div>
+            </div>
+            <div class="post_line">
+                <div class="post">
+                    <a class="post_a" href="#">
+                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+                        <div class="hover" style="display:none"></div>
+                    </a>
+                </div>
+                <div class="post">
+                    <a class="post_a" href="#">
+                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+                        <div class="hover" style="display:none"></div>
+                    </a>
+                </div>
+                <div class="post">
+                    <a class="post_a" href="#">
+                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+                        <div class="hover" style="display:none"></div>
+                    </a>
+                </div>
+            </div>
+            <div class="post_line">
+                <div class="post">
+                    <a class="post_a" href="#">
+                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+                        <div class="hover" style="display:none"></div>
+                    </a>
+                </div>
+                <div class="post">
+                    <a class="post_a" href="#">
+                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
+                        <div class="hover" style="display:none"></div>
+                    </a>
+                </div>
+                <div class="post">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{>layouts/footer}}

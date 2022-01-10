@@ -14,8 +14,10 @@ header{
 }
 .header_line{
     width: 975px;
-    justify-content: space-around;
+    max-width: 975px;
+    justify-content: space-between;
     align-items: center;
+    padding : 0 20px 0 20px;
 }
 .home_logo{
     height: 25px;
@@ -90,10 +92,14 @@ header{
 }
 .search_result{
     position: absolute;
-    top: 48px;
+    top: 47px;
     left: -55px;
     justify-content: center;
+    width: 375px;
+    height: 375px;
+    background-color: white;
     box-shadow: 0 0 5px 1px rgba(80, 80, 80, 0.1);
+    border-radius: 5px;
 }
 .search_result_arrow{
     position: absolute;
@@ -103,7 +109,6 @@ header{
     transform: rotate(45deg);
     background-color: white;
     box-shadow: 0 0 5px 1px rgba(80, 80, 80, 0.1);
-    z-index: 98;
 }
 .search_result_box{
     overflow:auto;
@@ -111,13 +116,22 @@ header{
     width: 375px;
     height: 375px;
     background-color: white;
-    z-index: 99;
+    z-index: 1;
+    position: relative;
 }
 .search_recently{
     width: 100%;
     height: 100%;
     flex-direction: column;
-
+}
+.search_ajax{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
 }
 .search_recently_header{
     flex-direction: row;
@@ -130,13 +144,17 @@ header{
 }
 .search_recently_users_box{
     flex-direction: column;
-    padding: 0 15px 0 15px;
 }
 .search_recently_user{
     flex-direction: row;
     align-items: center;
     height: 60px;
     display: flex;
+    padding: 0 15px 0 15px;
+    cursor: pointer;
+}
+.search_recently_user:hover{
+    background-color: #fafafa;
 }
 .search_recently_user_img{
     width: 45px;
@@ -146,6 +164,22 @@ header{
 }
 .search_recently_user_text{
     flex-direction: column;
-    font-size: 12px;
+    font-size: 14px;
     width: 77%;
+    pointer-events: none;
+}
+.search_no_recently{
+    width: 100%;
+    height: 325px;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+    color: #8e8e8e;
+    font-weight: bold;
+    font-size: 14px;
+}
+.search_list{
+    flex-direction: column;
+    width: 100%;
+    padding-top: 10px;
 }
