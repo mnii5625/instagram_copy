@@ -37,8 +37,8 @@ public class SearchRepository {
             List<UserRequest.User> users = new ArrayList<>();
             for(DocumentSnapshot doc : Snapshot.get().getDocuments()){
                 UserDetails user = doc.toObject(UserDetails.class);
-                String filteredInsta = user.getInsta_id().replaceAll("\\.", "").replaceAll("_","");
-                if(user.getInsta_id().contains(word) || (!filteredWord.equals("") && filteredInsta.contains(filteredWord))){
+                String filteredInsta = user.getInsta().replaceAll("\\.", "").replaceAll("_","");
+                if(user.getInsta().contains(word) || (!filteredWord.equals("") && filteredInsta.contains(filteredWord))){
                     users.add(new UserRequest.User(user));
                 }
             }

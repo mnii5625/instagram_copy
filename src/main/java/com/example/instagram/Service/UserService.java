@@ -5,11 +5,14 @@ import com.example.instagram.Entity.Request.UserRequest;
 import com.example.instagram.Entity.Response.CookieUtil;
 import com.example.instagram.Entity.Response.Response;
 import com.example.instagram.Entity.TokenInfo;
+import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
 import com.example.instagram.Jwt.JwtTokenProvider;
 import com.example.instagram.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +22,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 
@@ -28,12 +38,36 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
+    @Value("${images.path}")
+    private String imgPath;
 
     private final UserRepository userRepository;
     private final Response response;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate redisTemplate;
+
+    public User getUserInfo(String insta, Model model){
+        User user = getUserInfo(insta);
+        model.addAttribute("insta", user.getInsta());
+        model.addAttribute("profile_image", imgPath + user.getProfile_image());
+        return user;
+    }
+    public User getUserInfo(String insta){
+        Map hash = redisTemplate.opsForHash().entries(insta);
+        User user = User.builder()
+                .insta((String)hash.get("insta"))
+                .phone((String)hash.get("phone"))
+                .email((String)hash.get("email"))
+                .name((String)hash.get("name"))
+                .birthday((String)hash.get("birthday"))
+                .website((String)hash.get("website"))
+                .bio((String)hash.get("bio"))
+                .profile_image((String)hash.get("profile_image"))
+                .gender((String)hash.get("gender"))
+                .build();
+        return user;
+    }
 
     public ResponseEntity<?> login(UserRequest.Login login) {
         UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
@@ -64,15 +98,22 @@ public class UserService {
 
         try {
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
+            Date date = new Date();
             log.info("authentication : " + authentication.toString());
             log.info("authentication get name: " + authentication.getName());
             TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-            redisTemplate.opsForValue()
-                    .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 
-            CookieUtil.create(res, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, -1, "minstagram.kro.kr");
-            CookieUtil.create(res, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, -1, "minstagram.kro.kr");
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            Map<String, Object> UserMap = UserMap(user);
+            UserMap.put("RT", tokenInfo.getRefreshToken());
+            UserMap.put("RT_expire", Long.toString(date.getTime() + tokenInfo.getRefreshTokenExpirationTime()));
+            HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
+            hash.putAll(user.getInsta(), UserMap);
+           /*redisTemplate.opsForValue()
+                    .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);*/
+
+            CookieUtil.create(res, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
+            CookieUtil.create(res, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
             return response.success(
                     tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
         } catch (InternalAuthenticationServiceException e) {
@@ -116,15 +157,34 @@ public class UserService {
         return response.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
     }
 
-    public UserDetails userProfileImageUrl(String id){
-        UserDetails userDetails = null;
-        try{
-            userDetails = userRepository.findUser(id);
+    public ResponseEntity<?> changeProfileImage(String insta, MultipartFile file){
+        try {
+            String[] splitFileName = file.getOriginalFilename().split("\\.");
+            String extension =  splitFileName[splitFileName.length-1];
+            String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0, 15)+ "." + extension;
+            log.info("profile_image_file_name : " + uuid);
+            File newFile = new File(uuid);
+            file.transferTo(newFile);
+            return userRepository.changeProfileImage(insta, uuid);
         }catch (Exception e){
-
+            return response.fail("이미지 저장 실패", HttpStatus.BAD_REQUEST);
         }
-        return userDetails;
     }
 
-
+    public ResponseEntity<?> edit(String insta, UserRequest.Edit edit){
+        return response.fail("미구현 입니다...", HttpStatus.NOT_IMPLEMENTED);
+    }
+    public Map<String, Object> UserMap(UserDetails user){
+        Map<String, Object> map = new HashMap<>();
+        map.put("insta", user.getInsta());
+        map.put("phone", user.getPhone());
+        map.put("email", user.getEmail());
+        map.put("name", user.getName());
+        map.put("birthday", user.getBirthday());
+        map.put("website", user.getWebsite());
+        map.put("bio", user.getBio());
+        map.put("profile_image", user.getProfile_image());
+        map.put("gender", user.getGender());
+        return map;
+    }
 }

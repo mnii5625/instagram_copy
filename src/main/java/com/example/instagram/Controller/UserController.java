@@ -1,17 +1,27 @@
 package com.example.instagram.Controller;
 
 import com.example.instagram.Entity.Request.UserRequest;
+import com.example.instagram.Entity.Response.Response;
+import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
 import com.example.instagram.Repository.PostRepository;
 import com.example.instagram.Repository.UserRepository;
+import com.example.instagram.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -21,22 +31,65 @@ public class UserController {
     private String imgPath;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final UserService userService;
+    private final Response response;
 
     @GetMapping("/{insta}")
-    public String hi(@PathVariable("insta") String insta, Model model, Authentication auth){
-        log.info(insta);
-        UserRequest.User user = userRepository.getUserByInsta(insta);
-        UserDetails u = (UserDetails) auth.getPrincipal();
-        model.addAttribute("profile_image", imgPath + u.getProfile_image());
-        int postCount = postRepository.getPost(insta).size();
-        if(user != null){
-            model.addAttribute("bio","bio");
-            model.addAttribute("insta", user.getInsta());
-            model.addAttribute("postCount", postCount);
-            return "user";
-        }else{
-            return "user";
-        }
+    public String hi(@PathVariable("insta") String insta,
+                     Model model,
+                     Authentication auth){
+        User user = userService.getUserInfo(auth.getName(), model);
+        User U = userRepository.getUserByInsta(insta);
+        if(U != null){
+            model.addAttribute("user", true);
 
+            int postCount = postRepository.getPost(insta).size();
+            List<String> follow = userRepository.getFollow(U.getInsta());
+            List<String> follower = userRepository.getFollower(U.getInsta());
+            if(user.getInsta().equals(U.getInsta())){
+                model.addAttribute("my", true);
+            }else if(follow.contains(user.getInsta())){
+                if(follower.contains(user.getInsta())){
+                    model.addAttribute("follow", true);
+                }else{
+                    model.addAttribute("follower", true);
+                }
+            }
+            else if(follower.contains(user.getInsta())){
+                model.addAttribute("follow", true);
+            }else{
+                model.addAttribute("not_follow", true);
+            }
+
+            model.addAttribute("user_insta", U.getInsta());
+            model.addAttribute("user_profile_image", imgPath + U.getProfile_image());
+            model.addAttribute("bio",U.getBio());
+            model.addAttribute("postCount", postCount);
+            model.addAttribute("followerCount", follower.size());
+            model.addAttribute("followCount", follow.size());
+
+        }
+        return "user";
     }
+
+    @PostMapping("/follow")
+    @ResponseBody
+    public ResponseEntity<?> follow(UserRequest.follow follow, Authentication auth){
+        User user = userService.getUserInfo(auth.getName());
+        follow.setDate(new Date());
+        follow.setInsta(user.getInsta());
+        follow.setEnabled(true);
+        log.info(follow.toString());
+        return userRepository.follow(follow);
+    }
+
+    @PostMapping("/unfollow")
+    @ResponseBody
+    public ResponseEntity<?> unfollow(UserRequest.follow follow, Authentication auth){
+        User user = userService.getUserInfo(auth.getName());
+        follow.setDate(new Date());
+        follow.setInsta(user.getInsta());
+        return userRepository.unfollow(follow);
+    }
+
 }

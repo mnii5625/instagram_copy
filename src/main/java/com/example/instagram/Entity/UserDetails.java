@@ -16,14 +16,17 @@ import java.util.Collections;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
-    private String insta_id;
+    private String insta;
     private String phone;
     private String email;
     private String name;
     private String password;
     private String role;
     private String birthday;
+    private String website;
+    private String bio;
     private String profile_image;
+    private String gender;
     private boolean enabled;
 
     @Override
@@ -38,7 +41,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public String getUsername() {
-        return insta_id;
+        return insta;
     }
 
     @Override

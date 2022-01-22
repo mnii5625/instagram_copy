@@ -33,7 +33,12 @@ public class PostRepository {
     public ResponseEntity<?> getPost(String id, Date date, int n) throws ExecutionException, InterruptedException {
         // Post 가져오기
         CollectionReference PostCollection = db.collection(COLLECTION_POST);
-        Query postQuery =  PostCollection.whereEqualTo("insta", id).whereLessThan("date", date).orderBy("date", Query.Direction.DESCENDING).limit(n);
+        Query postQuery;
+        if( n == -1){
+            postQuery =  PostCollection.whereEqualTo("insta", id).whereLessThan("date", date).orderBy("date", Query.Direction.DESCENDING);
+        }else{
+            postQuery =  PostCollection.whereEqualTo("insta", id).whereLessThan("date", date).orderBy("date", Query.Direction.DESCENDING).limit(n);
+        }
         ApiFuture<QuerySnapshot> postSnapShot = postQuery.get();
         List<UserRequest.Post> posts = new ArrayList<>();
         if(postSnapShot.get().getDocuments().size() == 0){

@@ -45,7 +45,9 @@ public class SingupController{
     public String saveUser(User user) throws Exception {
         user.setEnabled(true);
         user.setRole("ROLE_USER");
-        System.out.println(user.toString());
+        user.setBio("");
+        user.setWebsite("");
+        user.setProfile_image("default.jpg");
 
         userRepository.saveUser(user);
         return "redirect:/";
@@ -83,16 +85,16 @@ public class SingupController{
         return map;
     }
 
-    @PostMapping("/signup/insta_id")
+    @PostMapping("/signup/insta")
     @ResponseBody
-    public Map<String, Object> existinstaId(@RequestParam("insta_id") String insta_id) throws Exception{
+    public Map<String, Object> existinstaId(@RequestParam("insta") String insta) throws Exception{
         Map<String, Object> map = new HashMap<>();
-        if(insta_id.length() >= 5 && insta_id.length()<20) {
-            if (userRepository.existInstaId(insta_id)) {
-                map.put("type", "insta_id");
+        if(insta.length() >= 5 && insta.length()<20) {
+            if (userRepository.existInstaId(insta)) {
+                map.put("type", "insta");
                 map.put("exist", "true");
             } else {
-                map.put("type", "insta_id");
+                map.put("type", "insta");
                 map.put("exist", "false");
             }
         }else{

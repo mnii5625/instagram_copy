@@ -7,9 +7,16 @@ $(document).ready(function () {
         if(!$(e.target).hasClass("search")){
             search_blur()
         }
+        if(!$(e.target).hasClass("header_user_img")){
+            $(".header_dropdown").css("display", "none");
+        }
     })
 
     $("#search_input").on("keyup", search);
+
+    $(".user_icon").click(function (){
+        $(".header_dropdown").css("display", "flex");
+    });
 });
 
 function search_focus(){
@@ -78,7 +85,7 @@ function setUser(msg, response){
     }
     for(let i = 0; i < response.data.length; i++){
         let user = response.data[i]
-        let box = $('<a class="search_recently_user" href=""></a>')
+        let box = $('<a class="search_recently_user" href="/'+user.insta +'"></a>')
         box.append($('<img class="search_recently_user_img" src = "http://minstagram.kro.kr/static/images/'+user.profile_image +'">'))
         let userInfo = $('<div class="search_recently_user_text"></div>')
         userInfo.append($('<span class="font_bold">'+ user.insta +'</span>'))

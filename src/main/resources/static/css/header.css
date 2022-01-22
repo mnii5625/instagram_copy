@@ -20,44 +20,52 @@ header{
     padding : 0 20px 0 20px;
 }
 .home_logo{
-    height: 25px;
-    width: 25px;
     background-position: -11px -6px;
 }
-.home_logo2{
+.home_logo_select{
     background-image: url("/images/Logo4.png")!important;
-    height: 25px;
-    width: 25px;
     background-position: -11px -6px;
 }
 .chat_logo{
-    height: 25px;
-    width: 25px;
+    background-position: -56px -7px;
+}
+.chat_logo_select{
+    background-image: url("/images/Logo4.png")!important;
     background-position: -56px -7px;
 }
 .new_logo{
-    height: 25px;
-    width: 25px;
     background-position: -102px -7px;
 }
+.new_logo_select{
+    background-image: url("/images/Logo4.png")!important;
+    background-position: -101px -6px;
+}
 .explore_logo{
-    height: 25px;
-    width: 25px;
     background-position: -149px -7px;
 }
+.explore_logo_select{
+    background-image: url("/images/Logo4.png")!important;
+    background-position: -148px -7px;
+}
 .heart_logo{
-    height: 25px;
-    width: 25px;
+     background-position: -194px -7px;
+ }
+.heart_logo_select{
+    background-image: url("/images/Logo4.png")!important;
     background-position: -194px -7px;
 }
 .header_user_img{
-    height: 25px;
-    width: 25px;
     border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .icons{
-    margin-right:20px;
+    width: 26px;margin-right:20px;
+    height: 26px;
     cursor:pointer;
+    justify-content: center;
+    align-items: center;
 }
 .search_box{
     display: flex;
@@ -182,4 +190,58 @@ header{
     flex-direction: column;
     width: 100%;
     padding-top: 10px;
+}
+.user_icon{
+    position: relative;
+
+}
+.user_icon > div{
+    margin : 0;
+}
+.header_dropdown{
+    position: absolute;
+    width: 230px;
+    min-height: 164px;
+    background-color: white;
+    left:-175px;
+    top: 40px;
+    box-shadow: 0 0 5px 1px rgb(80 80 80 / 10%);
+    border-radius: 5px;
+}
+.header_dropdown_arrow{
+    width: 13px;
+    height: 13px;
+    transform: rotate(45deg);
+    background-color: white;
+    box-shadow: 0 0 5px 1px rgb(80 80 80 / 10%);
+    position: absolute;
+    top: -7px;
+    right: 35px;
+}
+.header_dropdown_content{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index: 3;
+    border-radius: 5px;
+    flex-direction: column;
+}
+.header_dropdown_content > a{
+    display: flex;
+    flex-direction: row;
+    padding : 10px 16px;
+    align-items: center;
+    font-size: 14px;
+}
+.header_dropdown_content > a> span{
+    font-size: 14px;
+}
+.header_dropdown_content > a > svg{
+    margin-right: 8px;
+}
+.header_dropdown_content > a:hover{
+    background-color: #fafafa;
+}
+.header_dropdown_content > a:last-child{
+    border-top: 1px solid gainsboro;
 }

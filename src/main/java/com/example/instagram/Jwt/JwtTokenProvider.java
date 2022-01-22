@@ -2,14 +2,19 @@ package com.example.instagram.Jwt;
 
 
 import com.example.instagram.Entity.TokenInfo;
+import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
 import com.example.instagram.Repository.UserRepository;
+import com.example.instagram.Service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,10 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +36,8 @@ public class JwtTokenProvider {
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;    // 7일
 
     private UserRepository userRepository;
+    private UserService userService;
+    private RedisTemplate redisTemplate;
 
 
     private final Key key;
@@ -53,14 +57,16 @@ public class JwtTokenProvider {
         log.info(user.toString());
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+
         String accessToken = Jwts.builder()
-                .setSubject(user.getInsta_id())
+                .setSubject(user.getInsta())
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim("name", user.getName())
                 .claim("profile_image", user.getProfile_image())
                 .claim("phone", user.getPhone())
                 .claim("email", user.getEmail())
                 .claim("birthday", user.getBirthday())
+                .claim("gender", user.getGender())
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -86,12 +92,13 @@ public class JwtTokenProvider {
                         .collect(Collectors.toList());
         //log.info(claims.toString());
         UserDetails principal = UserDetails.builder()
-                .insta_id(claims.getSubject())
+                .insta(claims.getSubject())
                 .phone(claims.get("phone", String.class))
                 .email(claims.get("email", String.class))
                 .birthday(claims.get("birthday", String.class))
                 .profile_image(claims.get("profile_image", String.class))
                 .name(claims.get("name", String.class))
+                .gender(claims.get("gender", String.class))
                 .build();
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }

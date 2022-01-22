@@ -1,105 +1,90 @@
 {{>layouts/header}}
 <link href="css/user.css" rel="stylesheet">
+<script type="text/javascript" src="js/user.js"></script>
 <div class="container">
-    <div class="user">
-        <img class ="user_img" src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-        <div class="user_info">
-            <div class="user_top">
-                <span style="font-size: 28px; font-weight: lighter; margin-right: 20px">{{insta}}</span>
-                <a href="#" class="user_edit">프로필 편집</a>
-                <button class="user_option">톱니</button>
-            </div>
-            <div class="user_middle">
+    {{#user}}
+        <div class="user">
+            <img class ="user_img" src="{{user_profile_image}}">
+            <div class="user_info">
+                <div class="user_top">
+                    <span  id="insta" style="font-size: 28px; font-weight: lighter; margin-right: 20px">{{user_insta}}</span>
+                    {{#my}}
+                    <a href="/edit" class="user_edit">프로필 편집</a>
+                    <button class="user_option"><svg aria-label="옵션" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" fill="none" r="8.635" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle><path d="M14.232 3.656a1.269 1.269 0 01-.796-.66L12.93 2h-1.86l-.505.996a1.269 1.269 0 01-.796.66m-.001 16.688a1.269 1.269 0 01.796.66l.505.996h1.862l.505-.996a1.269 1.269 0 01.796-.66M3.656 9.768a1.269 1.269 0 01-.66.796L2 11.07v1.862l.996.505a1.269 1.269 0 01.66.796m16.688-.001a1.269 1.269 0 01.66-.796L22 12.93v-1.86l-.996-.505a1.269 1.269 0 01-.66-.796M7.678 4.522a1.269 1.269 0 01-1.03.096l-1.06-.348L4.27 5.587l.348 1.062a1.269 1.269 0 01-.096 1.03m11.8 11.799a1.269 1.269 0 011.03-.096l1.06.348 1.318-1.317-.348-1.062a1.269 1.269 0 01.096-1.03m-14.956.001a1.269 1.269 0 01.096 1.03l-.348 1.06 1.317 1.318 1.062-.348a1.269 1.269 0 011.03.096m11.799-11.8a1.269 1.269 0 01-.096-1.03l.348-1.06-1.317-1.318-1.062.348a1.269 1.269 0 01-1.03-.096" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+                    {{/my}}
+                    {{#not_follow}}
+                        <button class="user_edit follow_button">팔로우</button>
+                        <button class="open_modal_block">
+                            <svg aria-label="옵션" class="_8-yf5 " color="#262626" fill="#262626" height="32" role="img" viewBox="0 0 24 24" width="32"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle></svg>
+                        </button>
+                    {{/not_follow}}
+                    {{#follow}}
+                        <button class="user_edit">
+                            메시지 보내기
+                        </button>
+                        <button class="user_edit unfollow_button">
+                            <span class="background_logo2"></span>
+                        </button>
+                        <button class="open_modal_block">
+                            <svg aria-label="옵션" class="_8-yf5 " color="#262626" fill="#262626" height="32" role="img" viewBox="0 0 24 24" width="32"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle></svg>
+                        </button>
+                    {{/follow}}
+                    {{#follower}}
+                        <button class="user_edit f4f_button">맞팔로우 하기</button>
+                        <button class="open_modal_block">
+                            <svg aria-label="옵션" class="_8-yf5 " color="#262626" fill="#262626" height="32" role="img" viewBox="0 0 24 24" width="32"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle></svg>
+                        </button>
+                    {{/follower}}
+
+
+                </div>
+                <div class="user_middle">
                 <span class="font_16" style="margin-right: 40px">
                     <span>게시물</span>&nbsp;<span class="font_bold">{{postCount}}</span>
                 </span>
-                <span class="font_16" style="margin-right: 40px">
-                    <span>팔로워</span>&nbsp;<span class="font_bold">0</span>
+                    <span class="font_16" style="margin-right: 40px">
+                    <span>팔로워</span>&nbsp;<span class="font_bold">{{followerCount}}</span>
                 </span>
-                <span class="font_16" style="margin-right: 40px">
-                    <span>팔로우</span>&nbsp;<span class="font_bold">0</span>
+                    <span class="font_16" style="margin-right: 40px">
+                    <span>팔로우</span>&nbsp;<span class="font_bold">{{followCount}}</span>
                 </span>
 
-            </div>
-            <div class="user_bottom">
-            {{bio}}
+                </div>
+                <div class="user_bottom">
+                    {{bio}}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="user_post">
-        <div class="navigation font_12" style="">
-            <button class="nav nav_selected" style="margin-right: 55px;">
-                <div class="background_logo1 post_icon_selected"></div>&nbsp;
-                <span class="font_bold">게시물</span>
-            </button>
-            <button class="nav" style="margin-right: 55px;">
-                <div class="background_logo1 bookmark_icon"></div>&nbsp;
-                <span style="color: #8e8e8e">저장됨</span>
-            </button>
-            <button class="nav">
-                <div class="background_logo1 tagged_icon"></div>&nbsp;
-                <span style="color: #8e8e8e">태그됨</span>
-            </button>
-        </div>
-        <div class="posts">
-            <div class="post_line">
-                <div class="post">
-                    <a class="post_a" href="#">
-                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-                        <div class="hover" style="display:none"></div>
-                    </a>
-                </div>
-                <div class="post">
-                    <a class="post_a" href="#">
-                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-                        <div class="hover" style="display:none"></div>
-                    </a>
-                </div>
-                <div class="post">
-                    <a class="post_a" href="#">
-                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-                        <div class="hover" style="display:none"></div>
-                    </a>
-                </div>
+        <div class="user_post">
+            <div class="navigation" style="">
+                <button class="nav nav_selected font_12" style="margin-right: 55px;">
+                    <div class="background_logo1 post_icon_selected"></div>&nbsp;
+                    <span class="font_bold">게시물</span>
+                </button>
+                <button class="nav font_12" style="margin-right: 55px;">
+                    <div class="background_logo1 bookmark_icon"></div>&nbsp;
+                    <span style="color: #8e8e8e">저장됨</span>
+                </button>
+                <button class="nav font_12">
+                    <div class="background_logo1 tagged_icon"></div>&nbsp;
+                    <span style="color: #8e8e8e">태그됨</span>
+                </button>
             </div>
-            <div class="post_line">
-                <div class="post">
-                    <a class="post_a" href="#">
-                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-                        <div class="hover" style="display:none"></div>
-                    </a>
-                </div>
-                <div class="post">
-                    <a class="post_a" href="#">
-                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-                        <div class="hover" style="display:none"></div>
-                    </a>
-                </div>
-                <div class="post">
-                    <a class="post_a" href="#">
-                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-                        <div class="hover" style="display:none"></div>
-                    </a>
-                </div>
-            </div>
-            <div class="post_line">
-                <div class="post">
-                    <a class="post_a" href="#">
-                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-                        <div class="hover" style="display:none"></div>
-                    </a>
-                </div>
-                <div class="post">
-                    <a class="post_a" href="#">
-                        <img src="http://minstagram.kro.kr/static/images/1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg">
-                        <div class="hover" style="display:none"></div>
-                    </a>
-                </div>
-                <div class="post">
+            <div class="posts">
 
-                </div>
+
             </div>
         </div>
-    </div>
+    {{/user}}
+    {{^user}}
+        <div>
+            죄송합니다. 페이지를 사용할 수 없습니다.
+            클릭하신 링크가 잘못되었거나 페이지가 삭제되었습니다. Instagram으로 돌아가기.
+        </div>
+    {{/user}}
+    {{^my}}
+        {{>layouts/modal/unfollow}}
+        {{>layouts/modal/block}}
+    {{/my}}
 </div>
 {{>layouts/footer}}

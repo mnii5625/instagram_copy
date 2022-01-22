@@ -1,69 +1,17 @@
 
 
 $(document).ready(function () {
-    Posts(5);
-    let data = {
-        comment: "너무귀엽당",
-        insta: "ming._.i",
-        like: [
-            "ming._.i",
-            "mmiinini"
-        ],
-        date: "2022-01-01T15:00:00.000+00:00",
-        images: [
-            "1407e9aa-741f-46b4-a09e-be56e79ac805_GUGU.jpg"
-        ],
-        comments: [
-            {
-                bundle: "",
-                comment: "넘귀탱",
-                depth: 0,
-                insta: "ming._.i",
-                like: [
-
-                ],
-                date: "2021-12-31T15:00:00.000+00:00",
-                replies: null,
-                post: "test"
-            },
-            {
-                bundle: "random",
-                comment: "너무귀엽당ㅋㅋㅋ",
-                depth: 0,
-                insta: "ming._.i",
-                like: [
-                    "ming._.i",
-                    "mmiinini"
-                ],
-                date: "2022-01-02T15:00:00.000+00:00",
-                replies: [
-                    {
-                        bundle: "random",
-                        comment: "너무귀엽당2",
-                        depth: 1,
-                        insta: "ming._.i",
-                        like: [
-                            "ming._.i"
-                        ],
-                        date: "2022-01-01T15:00:00.000+00:00",
-                        replies: null,
-                        post: "test"
-                    }
-                ],
-                post: "test"
-            }
-        ]
-    }
-    //setPost(data);
+    Posts(5, "", new Date());
 });
-function Posts(num) {
+function Posts(n, insta, date) {
     $.ajax({
         url: "/post",
         type: "POST",
         dataType: "json",
         data: {
-            Date: new Date(),
-            n: num
+            Date: date,
+            insta : insta,
+            n: n
         },
         success: function (response) {
             for(let i = 0; i < response.data.length; i++){
@@ -125,14 +73,14 @@ function setPost(data){
         // 좋아요 구현
         if(data["like"].length > 1){
             let postLike = $('<div class="post_like"></div>');
-                postLike.append($('<a class="post_insta" href="">'+ randomLikeUser(data["like"]) +'</a>'));
+                postLike.append($('<a class="post_insta" href=/'+ data["insta"] +'>'+ randomLikeUser(data["like"]) +'</a>'));
                 postLike.html(postLike.html() + "님&nbsp;");
                 postLike.append($('<button class="post_comment_button">여러 명</button>'))
                 postLike.html(postLike.html() + "이 좋아합니다");
             postInfo.append(postLike);
         }else if(data["like"].length == 1){
             let postLike = $('<div class="post_like"></div>');
-                postLike.append($('<a class="post_insta" href="">'+ data["like"][0] +'</a>'));
+                postLike.append($('<a class="post_insta" href=/'+ data["like"][0] +'>'+ data["like"][0] +'</a>'));
                 postLike.html(postLike.html() + "님이 좋아합니다");
             postInfo.append(postLike);
         }
@@ -142,7 +90,7 @@ function setPost(data){
             let postComments = $('<div class="post_comments"></div>')
                 let c = comments[i];
                 let span = $('<span></span>');
-                    span.html('<a class="post_insta" href="">'+c["insta"]+'</a>\n')
+                    span.html('<a class="post_insta" href=/'+c["insta"]+'>'+c["insta"]+'</a>\n')
                 postComments.append(span)
                 postComments.append(c["comment"]);
             postInfo.append(postComments);
@@ -206,7 +154,7 @@ function Tag(comment){
         if(List[i][0] == "@"){
             out.html(out.html() + temp);
             temp = "";
-            out.html(out.html() + '\n<a class="tag">'+ List[i]+'</a>\n');
+            out.html(out.html() + '\n<a class="tag" href=/'+ List[i].substring(1) +'>'+ List[i]+'</a>\n');
         }
         else{
             temp += List[i] + " ";

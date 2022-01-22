@@ -1,0 +1,73 @@
+<script>
+    function modal_close(){
+        $(".modal_background").css("display", "none");
+    }
+    $(document).ready(function () {
+        $('.modal_container').on('click', function (e){
+            e.stopPropagation();
+        })
+    });
+    function unfollow(){
+        $.ajax({
+            url:"/unfollow",
+            type: "POST",
+            dataType: "json",
+            data : {
+                follow : $('#insta').html()
+            },
+            success: function (response){
+                console.log(response);
+            }
+        })
+    }
+</script>
+<style>
+    .modal_background{
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.65);
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0;
+        z-index: 100;
+    }
+    .modal_container{
+        background-color: white;
+        flex-direction: column;
+        border-radius: 12px;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal_container>img{
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin: 32px 16px 16px 16px;
+    }
+    .modal_container > span{
+        font-size: 14px;
+        margin-bottom: 32px;
+        margin-top: 16px;
+    }
+    .modal_container> button{
+        font-size: 14px;
+        border-top: 1px solid #DCDCDC;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: red;
+        font-weight: bold;
+        width: 400px;
+        height: 48px;
+    }
+</style>
+<div class="modal_background" style="display: none" id="unfollow_modal" onclick="modal_close()">
+    <div class="modal_container">
+        <img src="{{user_profile_image}}">
+        <span>@{{user_insta}}님의 팔로우를 취소하시겠어요?</span>
+        <button onclick="unfollow()">팔로우 취소</button>
+        <button style="color: black; font-weight: normal" onclick="modal_close()">취소</button>
+    </div>
+</div>

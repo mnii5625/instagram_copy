@@ -45,7 +45,6 @@
 .user_option{
     width: 40px;
     height: 40px;
-    border: 1px solid black;
 }
 .user_middle{
     margin-bottom: 20px;
@@ -128,4 +127,23 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+.follow_button{
+    background-color: #0095f6;
+    color: white;
+    padding: 0 24px;
+    border: 1px solid #0095f6;
+}
+.f4f_button{
+    background-color: #0095f6;
+    color: white;
+    border: 1px solid #0095f6;
+}
+.unfollow_button{
+    padding: 0 24px;
+}
+.unfollow_button > span{
+    background-position: -553px -100px;
+    height: 12px;
+    width: 24px;
 }

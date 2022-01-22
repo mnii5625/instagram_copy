@@ -9,6 +9,9 @@ html, body{
     height: 100%;
     background: #fafafa;
 }
+body{
+    position: relative;
+}
 div{
     display: flex;
 }

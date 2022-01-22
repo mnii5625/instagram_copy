@@ -1,0 +1,125 @@
+{{>layouts/header}}
+<link href="css/account.css" rel="stylesheet">
+<script type="text/javascript" src="js/account.js"></script>
+<div class="container">
+    <div class="account">
+        <div class="account_left">
+            <button class="account_selected">프로필 편집</button>
+            <button class="account_not_selected">비밀번호 변경</button>
+            <button class="account_not_selected">앱 및 웹사이트</button>
+            <button class="account_not_selected">이메일 및 SMS</button>
+            <button class="account_not_selected">푸시 알림</button>
+            <button class="account_not_selected">연락처 관리</button>
+            <button class="account_not_selected">개인정보 및 보안</button>
+            <button class="account_not_selected">로그인 활동</button>
+            <button class="account_not_selected">도움말</button>
+            <button class="account_not_selected">프로페셔널 계정으로 전환</button>
+            <div>
+                메타 계정 센터
+            </div>
+        </div>
+        <div class="account_right">
+            <div class="account_edit">
+                <div class="line" style="margin-top: 30px">
+                    <div class="left">
+                        <img class="user_profile_image" src="{{profile_image}}">
+                    </div>
+
+                    <div class="right">
+                        <span style="font-size: 20px; color: black">{{insta}}</span>
+                        <button class="text_button" id="change_profile_image_button">프로필 사진 바꾸기</button>
+                    </div>
+                </div>
+                <form id = "edit_form" autocomplete="off">
+                    <div class="line">
+                        <div class="left">
+                            <span>이름</span>
+                        </div>
+                        <div class="right">
+                            <input type="text" class="edit_input" name="name" value="{{name}}" placeholder="이름">
+                            <span style="margin-bottom: 16px">
+                                사람들이 이름, 별명 또는 비즈니스 이름 등 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수 있도록 도와주세요.
+                            </span>
+                            <span>
+                                이름은 14일 안에 두 번만 변경할 수 있습니다.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="left">
+                            <span>사용자 이름</span>
+                        </div>
+                        <div class="right">
+                            <input type="text" class="edit_input" name="insta" value="{{insta}}" placeholder="사용자 이름" aria-required="true">
+                            <span>
+                                대부분의 경우 14일 이내에 사용자 이름을 다시 {{insta}}(으)로 변경할 수 있습니다.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="left">
+                            <span>웹 사이트</span>
+                        </div>
+                        <div class="right">
+                            <input type="text" class="edit_input" name="website" placeholder="웹사이트">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="left">
+                            <span>소개</span>
+                        </div>
+                        <div class="right">
+                            <textarea name="bio"></textarea>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="left">
+                       </div>
+                        <div class="right">
+                            <span style="font-weight: bold; font-size: 15px">개인정보</span>
+                            <span>비즈니스나 반려동울 등에 사용된 계정인 경우에도 회원님의 개인정보를 입력하세요. 공개 프로필에는 포함되지 않습니다.</span>
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="left">
+                            <span>이메일</span>
+                        </div>
+                        <div class="right">
+                            <input type="text" class="edit_input" name="email" placeholder="이메일" value="{{email}}">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="left">
+                            <span>전화번호</span>
+                        </div>
+                        <div class="right">
+                            <input type="tel" class="edit_input" name="phone" value = "{{phone}}" placeholder="전화번호">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="left">
+                            <span>성별</span>
+                        </div>
+                        <div class="right">
+                            <input type="text" class="edit_input" name="gender" value="{{gender}}">
+                        </div>
+                    </div>
+                    <div class="line">
+                        <div class="left">
+                        </div>
+                        <div class="right" style="flex-direction: row">
+                            <button type="button" id ="edit_button" class="submit_button" disabled>제출</button>
+                            <span class="text_button" style="margin-left: 105px">계정을 일시적으로 비활성화</span>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{{>layouts/modal/change_profile_image}}
+
+{{>layouts/footer}}

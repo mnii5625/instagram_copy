@@ -1,9 +1,11 @@
 package com.example.instagram.Controller;
 
 import com.example.instagram.Entity.Response.Response;
+import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
 import com.example.instagram.Repository.PostRepository;
 import com.example.instagram.Repository.SearchRepository;
+import com.example.instagram.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,25 +32,37 @@ public class PostController {
     private final PostRepository postRepository;
     private final SearchRepository searchRepository;
     private final Response response;
+    private final UserService userService;
 
     @GetMapping("/post")
     public String LoginPage(HttpServletRequest request, Model model, Authentication auth){
         log.info("PostPage");
         log.info(auth.toString());
 
-        UserDetails user = (UserDetails) auth.getPrincipal();
-        model.addAttribute("profile_image", imgPath + user.getProfile_image());
+        model.addAttribute("home", true);
+        //model.addAttribute("chat", true);
+        //model.addAttribute("new", true);
+        //model.addAttribute("explore", true);
+        //model.addAttribute("heart", true);
+
+        //UserDetails users = (UserDetails) auth.getPrincipal();
+        User user = userService.getUserInfo(auth.getName(),model);
         return "post";
     }
 
     @PostMapping("/post")
     @ResponseBody
-    public ResponseEntity<?> LoginPage(Authentication auth,
+    public ResponseEntity<?> getPost(Authentication auth,
                                        @RequestParam("Date") Date date,
+                                       @RequestParam("insta") String insta,
                                        @RequestParam("n") int n){
         UserDetails user = (UserDetails) auth.getPrincipal();
         try{
-            return postRepository.getPost(user.getInsta_id(), date, n);
+            if(insta.equals("")){
+                return postRepository.getPost(user.getInsta(), date, n);
+            }else{
+                return postRepository.getPost(insta, date, n);
+            }
         }catch (Exception e){
             return response.fail(e.toString(), HttpStatus.BAD_REQUEST);
         }
@@ -62,19 +76,19 @@ public class PostController {
     @ResponseBody
     public ResponseEntity<?> Recently(Authentication auth){
         UserDetails user = (UserDetails) auth.getPrincipal();
-        return searchRepository.getRecentlySearch(user.getInsta_id());
+        return searchRepository.getRecentlySearch(user.getInsta());
     }
     @PostMapping("/header/recently/delete")
     public ResponseEntity<?> Delete(Authentication auth, @RequestParam("insta") String insta){
         UserDetails user = (UserDetails)  auth.getPrincipal();
-        log.info(user.getInsta_id() + " " + insta);
-        return searchRepository.delRecentlySearch(user.getInsta_id(), insta);
+        log.info(user.getInsta() + " " + insta);
+        return searchRepository.delRecentlySearch(user.getInsta(), insta);
     }
     @PostMapping("/header/recently/deleteAll")
     public ResponseEntity<?> DeleteAll(Authentication auth){
         UserDetails user = (UserDetails)  auth.getPrincipal();
-        log.info(user.getInsta_id());
-        return searchRepository.delAllRecentlySearch(user.getInsta_id());
+        log.info(user.getInsta());
+        return searchRepository.delAllRecentlySearch(user.getInsta());
     }
 
 }

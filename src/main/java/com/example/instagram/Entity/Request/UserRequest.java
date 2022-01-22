@@ -21,11 +21,12 @@ public class UserRequest {
         private String profile_image;
         private String name;
         public User(UserDetails u){
-            this.insta = u.getInsta_id();
+            this.insta = u.getInsta();
             this.profile_image = u.getProfile_image();
             this.name = u.getName();
         }
     }
+
     @Getter
     @Setter
     @ToString
@@ -73,5 +74,28 @@ public class UserRequest {
         private Date date;
         private List<String> images;
         private List<Comment> comments;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class Edit{
+        private String name;
+        private String insta;
+        private String website;
+        private String bio;
+        private String email;
+        private String phone;
+        private String gender;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class follow{
+        private Date date;
+        private String follow;
+        private String insta;
+        private boolean enabled;
     }
 }

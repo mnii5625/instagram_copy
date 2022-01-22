@@ -31,14 +31,14 @@ $(document).ready(function () {
 
         }
     });
-    $("#insta_id").on("keyup change paste input", function (){
-        if($("#insta_id").val() != ""){
+    $("#insta").on("keyup change paste input", function (){
+        if($("#insta").val() != ""){
             $($(".placeholder").get(2)).addClass("transition_label");
-            $("#insta_id").addClass("transition_input");
+            $("#insta").addClass("transition_input");
         }
         else{
             $($(".placeholder").get(2)).removeClass("transition_label");
-            $("#insta_id").removeClass("transition_input");
+            $("#insta").removeClass("transition_input");
         }
     });
     $("#password").on("keyup change paste input", function (){
@@ -121,11 +121,11 @@ $(document).ready(function () {
         }
         check();
     });
-    $("#insta_id").change(function (){
-        if($("#insta_id").val() != "") {
+    $("#insta").change(function (){
+        if($("#insta").val() != "") {
             $.ajax({
-                url: "/signup/insta_id",
-                data: { insta_id: $("#insta_id").val()},
+                url: "/signup/insta",
+                data: { insta: $("#insta").val()},
                 method: "POST",
                 dataType: "json"
             })
