@@ -16,6 +16,6 @@ public class Verification {
     private String code;
     private String EmailOrPhone;
     private String method;
-    private Date time;
+    private Date time = new Date();
 
 }
