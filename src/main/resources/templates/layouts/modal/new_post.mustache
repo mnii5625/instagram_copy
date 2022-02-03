@@ -3,11 +3,15 @@
     let page = 0;
     let drag = false;
     $(document).ready(function () {
-
+        addEvent();
+        modal_resize();
+    });
+    function addEvent(){
+        // 모달창 클릭시 창 닫힘 방지
         $('.modal_container_post').on('click', function (e){
             e.stopPropagation();
         })
-
+        // 드래그 앤 드랍 구현
         $('#image_pick').on("dragenter", function (e){
             e.preventDefault();
             e.stopPropagation();
@@ -29,121 +33,49 @@
             if(drop_files != null && drop_files != undefined){
                 set_images(drop_files);
             }
-
-            /*let formData = new FormData($('#profile_file_upload_form')[0]);
-            formData.append("files", files[0]);
-            formData.append("files", files[1]);
-            if(files != null && files != undefined){
-                $.ajax({
-                    url:"/test/post",
-                    type:"POST",
-                    dataType:"json",
-                    data : formData,
-                    processData: false,
-                    contentType: false,
-                    enctype: 'multipart/form-data',
-                    success : function(response){
-                        console.log(response);
-                    }
-                })
-            }*/
-
         })
+        //컴퓨터에서 선택 버튼
         $('.modal_image_input_button').click(function (){
             $('#modal_image_input').click();
         })
+        //컴퓨터에서 선택
         $('#modal_image_input').change(function (){
             console.log($('#modal_image_input')[0].files);
             set_images($('#modal_image_input')[0].files);
         })
+        // 백그라운드 클릭시 모달 닫힘
         $('.modal_background_post').on('click', modal_close);
-
-        modal_resize();
+        // 모달창 리사이즈
         $(window).resize(modal_resize);
-        //--------------------------
-        $('.drag').mousedown(function (e) {
-            let move = $(this);
-            let slider = $('.modal_image_slider');
-            let lastOffset = move.data('last');
-            let newX = 0;
-            let newY = 0;
-            let lastOffsetX = lastOffset ? lastOffset.dx : 0,
-                    lastOffsetY = lastOffset ? lastOffset.dy : 0;
-            let startX = e.pageX - lastOffsetX, startY = e.pageY - lastOffsetY;
-            move.css("cursor", "grabbing");
-            $(document).on("selectstart", function (){
-                return false;
-            })
-            drag = true;
-            function onMouseMove(e){
-                $('body').css("cursor", "grabbing");
-                newX = e.pageX - startX;
-                newY = e.pageY - startY;
-                move.data('last', {dx:newX, dy:newY});
-                if((slider.offset().left - move.offset().left) < 0){
-                    console.log(newX-(move.width() / 2 - slider.width() /2))
-                    newX = (move.width() / 2 - slider.width() /2) + (newX-(move.width() / 2 - slider.width() /2))/6
-                }
-                if(((move.width() + move.offset().left) - (slider.width() + slider.offset().left)) < 0){
-                    console.log((move.width() / 2 - slider.width() /2)); // +150 newX - 150~~~
-                    newX = ((move.width() / 2 - slider.width() /2) * -1) + (newX+(move.width() / 2 - slider.width() /2))/6;
-                }
-                if((slider.offset().top - move.offset().top < 0)){
-                    newY = (move.height() / 2 - slider.height() /2) + (newY-(move.height() / 2 - slider.height() /2))/6
-                }
-                if(((move.height() + move.offset().top) - (slider.height() + slider.offset().top)) < 0){
-                    newY = ((move.height() / 2 - slider.height() /2) * -1) + (newY+(move.height() / 2 - slider.height() /2))/6;
-                }
-                TweenLite.to(move, 0.5, {
-                    css:{
-                        transform : 'translate(' + newX + 'px, '+newY+'px)'
-                    }
-                })
-
-
-            }
-
-            $(document).mousemove(onMouseMove);
-            $(document).on('mouseup', function (){
-                $(document).off("selectstart");
-                $('body').css("cursor", "auto");
-                move.css("cursor", "grab");
-                $(document).off("mousemove");
-                if((slider.offset().left - move.offset().left) < 0){
-                    newX = move.width() / 2 - slider.width() /2;
-                }
-                if(((move.width() + move.offset().left) - (slider.width() + slider.offset().left)) < 0){
-                    newX = (move.width() / 2 - slider.width() /2) * -1;
-                }
-                if((slider.offset().top - move.offset().top < 0)){
-                    newY = move.height() / 2 - move.height() /2;
-                }
-                if(((move.height() + move.offset().top) - (slider.height() + slider.offset().top)) < 0){
-                    newY = (move.height() / 2 - move.height() /2) * -1;
-                }
-                move.data('last', {dx:newX, dy:newY});
-                TweenLite.to(move, 0.2, {
-                    css:{
-                        transform : 'translate(' + newX + 'px, '+newY+'px)'
-                    }
-                })
-            })
-        })
         $(document).on('click', function (e){
             drag = false;
         })
-        //-----------------------
-        /*$('.drag').draggable({
-        });*/
-    });
+        // 이미지 슬라이드 다음 버튼
+        $($('.img_slider_icon')[0]).on('click', prev_img);
+        $($('.img_slider_icon')[1]).on('click', next_img);
+        $('.img_cut').children().on("click",cut_img);
+        $('.zoom_input').on('input',zoom_img);
+        $('.zoom_input').on('mouseup', function (e){
+            e.stopPropagation()
+            e.stopImmediatePropagation()
+            e.preventDefault()
+        })
+
+
+    }
     function Drag(e){
+        console.log("Drag")
         let move = $(this);
+
         let slider = $('.modal_image_slider');
         let lastOffset = move.data('last');
         let newX = 0;
         let newY = 0;
         let lastOffsetX = lastOffset ? lastOffset.dx : 0,
-                lastOffsetY = lastOffset ? lastOffset.dy : 0;
+                lastOffsetY = lastOffset ? lastOffset.dy : 0,
+                lastScale = lastOffset ? lastOffset.scale : 1;
+        let moveWidth = move.width() * lastScale;
+        let moveHeight = move.height() * lastScale;
         let startX = e.pageX - lastOffsetX, startY = e.pageY - lastOffsetY;
         move.css("cursor", "grabbing");
         $(document).on("selectstart", function (){
@@ -154,24 +86,31 @@
             $('body').css("cursor", "grabbing");
             newX = e.pageX - startX;
             newY = e.pageY - startY;
-            move.data('last', {dx:newX, dy:newY});
+            console.log(slider.offset().left - move.offset().left);
             if((slider.offset().left - move.offset().left) < 0){
-                console.log(newX-(move.width() / 2 - slider.width() /2))
-                newX = (move.width() / 2 - slider.width() /2) + (newX-(move.width() / 2 - slider.width() /2))/6
+                newX = (moveWidth / 2 - slider.width() /2) + (newX-(moveWidth / 2 - slider.width() /2))/6
             }
-            if(((move.width() + move.offset().left) - (slider.width() + slider.offset().left)) < 0){
-                console.log((move.width() / 2 - slider.width() /2)); // +150 newX - 150~~~
-                newX = ((move.width() / 2 - slider.width() /2) * -1) + (newX+(move.width() / 2 - slider.width() /2))/6;
+            if(((moveWidth + move.offset().left) - (slider.width() + slider.offset().left)) < 0){
+                newX = ((moveWidth / 2 - slider.width() /2) * -1) + (newX+(moveWidth / 2 - slider.width() /2))/6;
             }
             if((slider.offset().top - move.offset().top < 0)){
-                newY = (move.height() / 2 - slider.height() /2) + (newY-(move.height() / 2 - slider.height() /2))/6
+                newY = (moveHeight / 2 - slider.height() /2)+ (newY-(moveHeight / 2 - slider.height() /2))/6
             }
-            if(((move.height() + move.offset().top) - (slider.height() + slider.offset().top)) < 0){
-                newY = ((move.height() / 2 - slider.height() /2) * -1) + (newY+(move.height() / 2 - slider.height() /2))/6;
+            if(((moveHeight + move.offset().top) - (slider.height() + slider.offset().top)) < 0){
+                newY = ((moveHeight / 2 - slider.height() /2) * -1) + (newY+(moveHeight / 2 - slider.height() /2))/6;
             }
-            TweenLite.to(move, 0.5, {
+            move.data('last', {dx:newX, dy:newY, scale:lastScale});
+            let mini =  $($('.drag_mini')[move.index()]);
+            TweenLite.to(move, 0.3, {
                 css:{
-                    transform : 'translate(' + newX + 'px, '+newY+'px)'
+                    transform : 'translate(' + newX + 'px, '+newY+'px) scale('+ lastScale +','+ lastScale+')'
+                }
+            })
+            let miniX = newX/move.width()*mini.width()/2;
+            let miniY = newY/move.width()*mini.width()/2;
+            TweenLite.to(mini, 0.3, {
+                css:{
+                    transform : 'translate(' + miniX + 'px, '+miniY+'px) scale('+ lastScale +','+ lastScale+')'
                 }
             })
 
@@ -180,32 +119,50 @@
 
         $(document).mousemove(onMouseMove);
         $(document).on('mouseup', function (){
+            console.log("mouseUp")
+            //드래그 방지 해제
             $(document).off("selectstart");
+            //커서 오토로 변경
             $('body').css("cursor", "auto");
+            // 커서 그랩으로 변경
             move.css("cursor", "grab");
+            // 마우스 move 이벤트 해제
             $(document).off("mousemove");
+            // 영역 넘어가는거 확인
+            console.log("up", move.data('last'));
+            lastOffset = move.data('last');
+            lastScale = lastOffset ? lastOffset.scale : 1;
             if((slider.offset().left - move.offset().left) < 0){
-                newX = move.width() / 2 - slider.width() /2;
+                newX = moveWidth / 2 - slider.width() /2;
             }
-            if(((move.width() + move.offset().left) - (slider.width() + slider.offset().left)) < 0){
-                newX = (move.width() / 2 - slider.width() /2) * -1;
+            if(((moveWidth + move.offset().left) - (slider.width() + slider.offset().left)) < 0){
+                newX = (moveWidth / 2 - slider.width() /2) * -1;
             }
             if((slider.offset().top - move.offset().top < 0)){
-                newY = move.height() / 2 - move.height() /2;
+                newY = moveHeight / 2 - slider.height() /2;
             }
-            if(((move.height() + move.offset().top) - (slider.height() + slider.offset().top)) < 0){
-                newY = (move.height() / 2 - move.height() /2) * -1;
+            if(((moveHeight + move.offset().top) - (slider.height() + slider.offset().top)) < 0){
+                newY = (moveHeight / 2 - slider.height() /2) * -1;
             }
-            move.data('last', {dx:newX, dy:newY});
+            move.data('last', {dx:newX, dy:newY, scale: lastScale});
+
             TweenLite.to(move, 0.2, {
                 css:{
-                    transform : 'translate(' + newX + 'px, '+newY+'px)'
+                    transform : 'translate(' + newX + 'px, '+newY+'px) scale('+ lastScale +','+ lastScale+')'
                 }
             })
+            let mini =  $($('.drag_mini')[move.index()]);
+            let miniX = newX/move.width()*mini.width()/2;
+            let miniY = newY/move.width()*mini.width()/2;
+            TweenLite.to(mini, 0.3, {
+                css:{
+                    transform : 'translate(' + miniX + 'px, '+miniY+'px) scale('+ lastScale +','+ lastScale+')'
+                }
+            })
+            $(document).off('mouseup')
         })
     }
     function modal_close(){
-        console.log("백그라운드 클릭")
         if(!drag) {
             $(".modal_background_post").css("display", "none");
         }
@@ -224,14 +181,26 @@
             console.log(side)
             $('.modal_image_container').width(side).height(side);
         }
-        $('.drag').height(side);
-        $('.drag').width(275*side/183);
     }
     function set_images(image_files){
         console.log(image_files)
+        $('#nth-img').attr("max", image_files.length-1);
+        if(image_files.length == 1){
+            $('.modal_image_slider').next().css("display", "none")
+            $('.img_slider_dots').css("display", "none")
+        }else{
+            $('.modal_image_slider').next().css("display", "flex")
+            $('.img_slider_dots').css("display", "flex")
+        }
         for(let i = 0; i<image_files.length; i++){
-            files.push(image_files[i]);
             let file = image_files[i];
+            let dots = $('.img_slider_dots');
+            let dot = $('<div class="img_slider_dot"></div>');
+            if(i ===0){
+                dot.css("background-color", "#0095f6")
+            }
+            dots.append(dot);
+
             console.log("file", file);
             let img = new Image();
             let src = URL.createObjectURL(file);
@@ -240,20 +209,38 @@
                 let slider = $('.modal_image_slider');
                 let fileWidth = img.width;
                 let fileHeight = img.height;
+                files.push({"file":image_files[i], "width": fileWidth, "height": fileHeight, "url":src});
                 let d = $('<div class="drag">');
                     d.css("background-image", 'url('+ src +')');
+                    if(i !== 0){
+                        d.css("display", "none");
+                    }
+                let dragMini = $('<div class="drag_mini"></div>');
+                    dragMini.css("background-image" , "url('"+ src +"')")
                 if(fileWidth < fileHeight){
                     d.width(slider.width());
                     d.height(slider.width() * fileHeight / fileWidth);
+                    dragMini.width(94);
+                    dragMini.height(94 * fileHeight/fileWidth);
                 }else{
                     d.height(slider.height());
                     d.width(slider.height() * fileWidth / fileHeight);
+                    dragMini.height(94);
+                    dragMini.width(94 * fileWidth / fileHeight);
                 }
                 d.on("mousedown", Drag);
                 $('.modal_image_slider').append(d);
+                let gallery = $('.img_slider_gallery_list');
+                let galleryImg = $('<li class="img_slider_gallery_img ui-state-default"></li>');
+
+                galleryImg.append(dragMini);
+                gallery.append(galleryImg);
+
             }
 
+
         }
+        //$('#img_slider_gallery_list').sortable();
         console.log(files);
         next();
     }
@@ -280,6 +267,123 @@
                 page--;
                 break
         }
+    }
+    function next_img(e){
+        let n = $('#nth-img');
+        let i = $($('.drag')[n.val()]);
+        i.css("display","none");
+        i.next().css("display","flex");
+
+        $(this).prev().prev().css("display", "flex");
+        n.val(parseInt(n.val())+1);
+        $('.img_slider_dot').removeAttr('style');
+        $($('.img_slider_dot')[n.val()]).css("background-color", "#0095f6");
+        if(n.val() === n.attr("max")){
+            $(this).css("display","none");
+        }
+    }
+    function prev_img(e){
+        let n = $('#nth-img');
+        let i = $($('.drag')[n.val()]);
+        i.css("display", "none");
+        i.prev().css("display", "flex");
+        $(this).next().next().css("display", "flex");
+        n.val(parseInt(n.val())-1);
+        $('.img_slider_dot').removeAttr('style');
+        $($('.img_slider_dot')[n.val()]).css("background-color", "#0095f6");
+        if(n.val() === "0"){
+            $(this).css("display", "none");
+        }
+    }
+    function cut_img(e){
+        let side = $('.modal_image_container').width();
+        let slider = $('.modal_image_slider');
+        let index = $(this).index()
+        switch (index){
+            case 0:
+                // 1:1
+                slider.animate({width: '100%', height: '100%'});
+                $($(this).parent().children().children().get()).css({fill: "#8e8e8e", color: "#8e8e8e"})
+                $($(this).children().get()).css({fill: "white", color: "white"})
+
+                break;
+            case 1:
+                // 4:5
+                let width = side / 5 * 4;
+                slider.animate({width: width, height: '100%'});
+                $($(this).parent().children().children().get()).css({fill: "#8e8e8e", color: "#8e8e8e"})
+                $($(this).children().get()).css({fill: "white", color: "white"})
+                break;
+            case 2:
+                // 16:9
+                let height = side / 16 * 9;
+                slider.animate({width: '100%', height: height});
+                $($(this).parent().children().children().get()).css({fill: "#8e8e8e", color: "#8e8e8e"})
+                $($(this).children().get()).css({fill: "white", color: "white"})
+                break;
+        }
+        resize_img(index);
+    }
+    function resize_img(n){
+
+        let d = $('.drag');
+        let side = $('.modal_image_container').width();
+        for(let i = 0; i<d.length; i++){
+            let t = $(d[i]);
+            console.log(t);
+            let height = files[i].height;
+            let width = files[i].width;
+            switch (n){
+                case 0:
+                    if(width < height){
+                        t.width(side);
+                        t.height(side * height / width);
+                    }else{
+                        t.height(side);
+                        t.width(side * width / height);
+                    }
+                    break;
+                case 1:
+                    if(width/height < 4/5){
+                        t.width(side)
+                        t.height(side * height/width)
+                    }else{
+                        t.height(side)
+                        t.width(side * width /height)
+                    }
+                    break;
+                case 2:
+                    console.log("here")
+                    if(width/height < 16/9){
+                        t.animate({width : side, height : side * height / width},0);
+                        /*d.width(slider.width());
+                        d.height(slider.width() * height / width);*/
+                    }else{
+                        t.animate({width : side * width / height, height : side},0);
+
+                        /*d.width(slider.height() * width / height);
+                        d.height(slider.height());*/
+                    }
+                    break;
+            }
+        }
+    }
+    function zoom_img(e){
+        let value = 1 + (parseInt($(this).val())/100);
+        let index = $("#nth-img").val();
+        let move = $($('.drag')[index]);
+        let lastOffset = move.data('last');
+        let lastOffsetX = lastOffset ? lastOffset.dx : 0,
+                lastOffsetY = lastOffset ? lastOffset.dy : 0,
+                lastScale = lastOffset ? lastOffset.scale : 1;
+        move.data('last', {dx:lastOffsetX, dy:lastOffsetY, scale: value});
+        //move.css("transform", 'translate(' + lastOffsetX + 'px, '+lastOffsetY+'px) scale('+ value +','+ value+')')
+        TweenLite.to(move, 0, {
+            css:{
+                transform : 'translate(' + lastOffsetX + 'px, '+lastOffsetY+'px) scale('+ value +','+ value+')'
+            }
+        })
+        move.scale = value;
     }
 </script>
 <style>
@@ -350,7 +454,9 @@
         position: relative;
         width: 100%;
         height: 100%;
+        align-items: center;
         justify-content: center;
+        overflow: hidden;
     }
     .drag{
         cursor:grab;
@@ -370,24 +476,132 @@
         justify-content: center;
         align-items: center;
     }
-    .img_slider_icon:nth-child(1){
+    .img_slider_icon:nth-child(2){
         left:8px;
     }
-    .img_slider_icon:nth-child(3){
+    .img_slider_icon:nth-child(4){
         right:8px;
     }
-    .img_slider_icon:nth-child(4){
+    .img_slider_icon:nth-child(5){
         left: 8px;
         bottom: 8px;
     }
-    .img_slider_icon:nth-child(5){
+    .img_slider_icon:nth-child(6){
         left: 48px;
         bottom: 8px;
     }
-    .img_slider_icon:nth-child(6){
+    .img_slider_icon:nth-child(7){
         right:8px;
         bottom:8px;
     }
+    .img_cut{
+        flex-direction: column;
+        position: absolute;
+        top : -150px;
+        left: 0px;
+        background-color: rgba(0,0,0,0.60);
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    .img_cut > div{
+        width: 84px;
+        height: 48px;
+        justify-content: space-around;
+        align-items: center;
+    }
+    .img_cut > div:not(:last-child){
+        border-bottom: 1px solid #8e8e8e;
+    }
+    .zoom_div{
+        width: 132px;
+        height: 32px;
+        background-color: rgba(0,0,0,0.6);
+        border-radius: 7px;
+        position: absolute;
+        top: -50px;
+        left: 100px;
+        justify-content: center;
+        align-items: center;
+    }
+    .zoom_input{
+        background: transparent;
+        width: 108px;
+        height: 12px;
+        appearance: none;
+        cursor:pointer;
+    }
+    .zoom_input::-webkit-slider-runnable-track {
+        background: white;
+        height: 1px;
+    }
+    .zoom_input::-webkit-slider-thumb {
+        appearance: none;
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        background-color: white;
+        margin-top: -8px;
+    }
+    .img_slider_dots{
+        position: absolute;
+        bottom: 50px;
+    }
+    .img_slider_dot{
+        height: 6px;
+        width: 6px;
+        background-color: #a8a8a8;
+        border-radius: 50%;
+    }
+    .img_slider_dot:not(:last-child){
+        margin-right: 4px;
+    }
+    .img_slider_gallery{
+        height: 118px;
+        padding: 12px;
+        background-color: rgba(0,0,0,0.6);
+        position: absolute;
+        bottom: 100px;
+        right: 100px;
+        justify-content: center;
+        align-items: center;
+        border-radius: 7px;
+    }
+    .img_slider_gallery_add{
+        display: flex;
+        background: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid white;
+        justify-content: center;
+        align-items: center;
+    }
+    .img_slider_gallery_list{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .img_slider_gallery_img{
+        width: 94px;
+        height: 94px;
+        object-fit: cover;
+        margin-right: 12px;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+    }
+    .drag_mini{
+        position: absolute;
+        width: 94px;
+        height: 125px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: flex;
+    }
+
 </style>
 
 
@@ -417,6 +631,7 @@
             </div>
             <div class="modal_image_container">
                 <div style="overflow: hidden; justify-content: center; align-items: center; width: 100%; position:relative">
+                    <input type="hidden" id ="nth-img" value="0">
                     <button class="img_slider_icon" style="display: none">
                         <svg aria-label="왼쪽 방향 아이콘" color="#ffffff" fill="#ffffff" height="16" role="img" viewBox="0 0 24 24" width="16"><polyline fill="none" points="16.502 3 7.498 12 16.502 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg>
                     </button>
@@ -428,16 +643,43 @@
                     </button>
                     <button class="img_slider_icon">
                         <svg aria-label="자르기 선택" class="_8-yf5 " color="#ffffff" fill="#ffffff" height="16" role="img" viewBox="0 0 24 24" width="16"><path d="M10 20H4v-6a1 1 0 00-2 0v7a1 1 0 001 1h7a1 1 0 000-2zM20.999 2H14a1 1 0 000 2h5.999v6a1 1 0 002 0V3a1 1 0 00-1-1z"></path></svg>
+                        <div class="img_cut">
+                            <div>
+                                <span style="color: white">1:1</span>
+                                <svg aria-label="정사각형 자르기 아이콘" class="_8-yf5 " color="#ffffff" fill="#ffffff" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M19 23H5a4.004 4.004 0 01-4-4V5a4.004 4.004 0 014-4h14a4.004 4.004 0 014 4v14a4.004 4.004 0 01-4 4zM5 3a2.002 2.002 0 00-2 2v14a2.002 2.002 0 002 2h14a2.002 2.002 0 002-2V5a2.002 2.002 0 00-2-2z"></path></svg>
+                            </div>
+                            <div>
+                                <span style="color:#8e8e8e">4:5</span>
+                                <svg aria-label="세로 방향 자르기 아이콘" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16 23H8a4.004 4.004 0 01-4-4V5a4.004 4.004 0 014-4h8a4.004 4.004 0 014 4v14a4.004 4.004 0 01-4 4zM8 3a2.002 2.002 0 00-2 2v14a2.002 2.002 0 002 2h8a2.002 2.002 0 002-2V5a2.002 2.002 0 00-2-2z"></path></svg>
+
+                            </div>
+                            <div>
+                                <span style="color:#8e8e8e">16:9</span>
+                                <svg aria-label="가로 방향 자르기 아이콘" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M19 20H5a4.004 4.004 0 01-4-4V8a4.004 4.004 0 014-4h14a4.004 4.004 0 014 4v8a4.004 4.004 0 01-4 4zM5 6a2.002 2.002 0 00-2 2v8a2.002 2.002 0 002 2h14a2.002 2.002 0 002-2V8a2.002 2.002 0 00-2-2z"></path></svg>
+                            </div>
+                        </div>
+
                     </button>
                     <button class="img_slider_icon">
                         <svg aria-label="확대/축소 선택" class="_8-yf5 " color="#ffffff" fill="#ffffff" height="16" role="img" viewBox="0 0 24 24" width="16"><path d="M22.707 21.293l-4.825-4.825a9.519 9.519 0 10-1.414 1.414l4.825 4.825a1 1 0 001.414-1.414zM10.5 18.001a7.5 7.5 0 117.5-7.5 7.509 7.509 0 01-7.5 7.5zm3.5-8.5h-2.5v-2.5a1 1 0 10-2 0v2.5H7a1 1 0 100 2h2.5v2.5a1 1 0 002 0v-2.5H14a1 1 0 000-2z"></path></svg>
+                        <div class="zoom_div">
+                            <input type="range" min="0" max="100" class="zoom_input" id="zoom_input" value="0">
+                        </div>
                     </button>
                     <button class="img_slider_icon">
                         <svg aria-label="미디어 갤러리 열기" class="_8-yf5 " color="#ffffff" fill="#ffffff" height="16" role="img" viewBox="0 0 24 24" width="16"><path d="M19 15V5a4.004 4.004 0 00-4-4H5a4.004 4.004 0 00-4 4v10a4.004 4.004 0 004 4h10a4.004 4.004 0 004-4zM3 15V5a2.002 2.002 0 012-2h10a2.002 2.002 0 012 2v10a2.002 2.002 0 01-2 2H5a2.002 2.002 0 01-2-2zm18.862-8.773A.501.501 0 0021 6.57v8.431a6 6 0 01-6 6H6.58a.504.504 0 00-.35.863A3.944 3.944 0 009 23h6a8 8 0 008-8V9a3.95 3.95 0 00-1.138-2.773z" fill-rule="evenodd"></path></svg>
+                        <div class="img_slider_gallery">
+                            <ul class="img_slider_gallery_list" id="img_slider_gallery_list">
+
+                            </ul>
+
+                            <div class="img_slider_gallery_add">
+                                <svg aria-label="+ 아이콘" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="22" role="img" viewBox="0 0 24 24" width="22"><path d="M21 11.3h-8.2V3c0-.4-.3-.8-.8-.8s-.8.4-.8.8v8.2H3c-.4 0-.8.3-.8.8s.3.8.8.8h8.2V21c0 .4.3.8.8.8s.8-.3.8-.8v-8.2H21c.4 0 .8-.3.8-.8s-.4-.7-.8-.7z"></path></svg>
+                            </div>
+                        </div>
+
                     </button>
                     <div class="img_slider_dots">
-                        <div class="img_slider_dot"></div>
-                        <div class="img_slider_dot"></div>
                     </div>
                 </div>
             </div>

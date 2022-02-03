@@ -1,0 +1,224 @@
+.modal_background_post{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    z-index: 100;
+}
+.modal_container_post{
+    background-color: white;
+    flex-direction: column;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    min-width: 350px;
+    max-width: 850px;
+    min-height: 400px;
+    overflow: hidden;
+}
+.post_upload_header{
+    font-size: 16px;
+    font-weight: bold;
+    height: 42px;
+    text-align: center;
+    line-height: 42px;
+}
+.post_upload_image{
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+}
+.post_upload_image > div:first-child{
+    justify-content: space-between;
+    flex-direction: row;
+    border-bottom: 1px solid #DCDCDC;
+    padding:0 10px;
+    align-items: center;
+}
+.modal_image_container > form{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.modal_image_container > form > svg{
+    margin-bottom: 10px;
+}
+.modal_image_container > form > span {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+.modal_image_container > form > button{
+    background-color: #0095f6;
+    color: white;
+    font-weight: bold;
+    border-radius: 3px;
+    padding: 5px 9px;
+    font-size: 14px;
+}
+.modal_image_slider{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.drag{
+    cursor:grab;
+    position: absolute;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.img_slider_icon{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    z-index: 1;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.img_slider_icon:nth-child(2){
+    left:8px;
+}
+.img_slider_icon:nth-child(4){
+    right:8px;
+}
+.img_slider_icon:nth-child(5){
+    left: 8px;
+    bottom: 8px;
+}
+.img_slider_icon:nth-child(6){
+    left: 48px;
+    bottom: 8px;
+}
+.img_slider_icon:nth-child(7){
+    right:8px;
+    bottom:8px;
+}
+.img_cut{
+    flex-direction: column;
+    position: absolute;
+    top : -150px;
+    left: 0px;
+    background-color: rgba(0,0,0,0.60);
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.img_cut > div{
+    width: 84px;
+    height: 48px;
+    justify-content: space-around;
+    align-items: center;
+}
+.img_cut > div:not(:last-child){
+    border-bottom: 1px solid #8e8e8e;
+}
+.zoom_div{
+    width: 132px;
+    height: 32px;
+    background-color: rgba(0,0,0,0.6);
+    border-radius: 7px;
+    position: absolute;
+    top: -50px;
+    left: 100px;
+    justify-content: center;
+    align-items: center;
+}
+.zoom_input{
+    background: transparent;
+    width: 108px;
+    height: 12px;
+    appearance: none;
+    cursor:pointer;
+}
+.zoom_input::-webkit-slider-runnable-track {
+    background: white;
+    height: 1px;
+}
+.zoom_input::-webkit-slider-thumb {
+    appearance: none;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background-color: white;
+    margin-top: -8px;
+}
+.img_slider_dots{
+    position: absolute;
+    bottom: 50px;
+}
+.img_slider_dot{
+    height: 6px;
+    width: 6px;
+    background-color: #a8a8a8;
+    border-radius: 50%;
+}
+.img_slider_dot:not(:last-child){
+    margin-right: 4px;
+}
+.img_slider_gallery{
+    height: 118px;
+    padding: 12px;
+    background-color: rgba(0,0,0,0.6);
+    position: absolute;
+    bottom: 100px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    max-width: 97%;
+}
+.img_slider_gallery_add{
+    display: flex;
+    background: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid white;
+    justify-content: center;
+    align-items: center;
+    min-width: 48px;
+}
+.img_slider_gallery_slider{
+    margin-right: 12px;
+    overflow: hidden;
+    height: 100%;
+
+}
+.img_slider_gallery_list{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.img_slider_gallery_img{
+    width: 94px;
+    height: 94px;
+    object-fit: cover;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    overflow: hidden;
+    display: flex;
+    left: 0;
+    margin: 0 6px;
+    cursor: pointer;
+}
+.drag_mini{
+    position: absolute;
+    width: 94px;
+    height: 125px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+}
