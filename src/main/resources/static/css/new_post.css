@@ -108,12 +108,13 @@
 .img_cut{
     flex-direction: column;
     position: absolute;
-    top : -150px;
+    bottom : 28px;
     left: 0px;
     background-color: rgba(0,0,0,0.60);
     border-radius: 7px;
     font-size: 14px;
     font-weight: bold;
+    display: none;
 }
 .img_cut > div{
     width: 84px;
@@ -130,8 +131,8 @@
     background-color: rgba(0,0,0,0.6);
     border-radius: 7px;
     position: absolute;
-    top: -50px;
-    left: 100px;
+    bottom : 48px;
+    left: 0;
     justify-content: center;
     align-items: center;
 }
@@ -172,11 +173,12 @@
     padding: 12px;
     background-color: rgba(0,0,0,0.6);
     position: absolute;
-    bottom: 100px;
+    bottom: 56px;
     justify-content: center;
     align-items: center;
     border-radius: 7px;
     max-width: 97%;
+    right: 8px;
 }
 .img_slider_gallery_add{
     display: flex;
@@ -190,16 +192,20 @@
     min-width: 48px;
 }
 .img_slider_gallery_slider{
-    margin-right: 12px;
+    margin-right: 5px;
     overflow: hidden;
     height: 100%;
+    position: relative;
+    align-items: center;
 
 }
 .img_slider_gallery_list{
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    position: absolute;
+    width: inherit;
+    height: 100%;
 }
 .img_slider_gallery_img{
     width: 94px;
@@ -213,6 +219,10 @@
     left: 0;
     margin: 0 6px;
     cursor: pointer;
+    filter : brightness(50%);
+}
+.img_slider_gallery_img_focus{
+    filter: brightness(100%);
 }
 .drag_mini{
     position: absolute;
@@ -221,4 +231,22 @@
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
+}
+.img_slider_icon_mini_prev{
+    background-image: url("/images/Logo2.png");
+    background-repeat: no-repeat;
+    background-position: -379px -128px;
+    height: 45px;
+    width: 45px;
+    position: absolute;
+    left:0;
+}
+.img_slider_icon_mini_next{
+    background-image: url("/images/Logo2.png");
+    background-repeat: no-repeat;
+    background-position: -244px -107px;
+    height: 45px;
+    width: 45px;
+    position: absolute;
+    right: 0;
 }

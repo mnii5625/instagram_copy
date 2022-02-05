@@ -31,10 +31,10 @@ function search_blur(){
     $("#search_icon").css("display","block");
     $("#search_input").css("color", "#8e8e8e");
     $("#search_x").css("display", "none");
-    $("#search_result").animate({top: 38, opacity: "0"}, 100);
-
-
-    //$("#search_result").css("display","none");
+    //$("#search_result").delay(10000).css("display","none");
+    $("#search_result").animate({top: 38, opacity: "0"}, 100, function(){
+        $("#search_result").css('display', 'none');
+    });
 }
 function search(){
     if($("#search_input").val() == ""){
