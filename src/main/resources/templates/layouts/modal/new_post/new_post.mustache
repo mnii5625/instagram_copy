@@ -2,8 +2,7 @@
 <link href="css/new_post.css" rel="stylesheet">
 
 
-
-<div class="modal_background_post" style="display: flex" id="new_post_modal">
+<div class="modal_background_post" style="display: none" id="new_post_modal">
     <div class="modal_container_post">
         <div class="post_upload_image" id="image_pick" style="display: flex" >
             <div>
@@ -22,9 +21,9 @@
         </div>
         <div class="post_upload_image" id="image_edit" style="display: none">
             <div>
-                <button onclick="back()"><svg aria-label="돌아가기" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="2.909" x2="22.001" y1="12.004" y2="12.004"></line><polyline fill="none" points="9.276 4.726 2.001 12.004 9.276 19.274" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg></button>
+                <button class="back_button"><svg aria-label="돌아가기" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="2.909" x2="22.001" y1="12.004" y2="12.004"></line><polyline fill="none" points="9.276 4.726 2.001 12.004 9.276 19.274" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg></button>
                 <span class="post_upload_header">자르기</span>
-                <button style="font-size: 14px; color:#0095f6">다음</button>
+                <button class="next_button" style="font-size: 14px; color:#0095f6" >다음</button>
             </div>
             <div class="modal_image_container">
                 <div style="overflow: hidden; justify-content: center; align-items: center; width: 100%; position:relative">
@@ -35,7 +34,7 @@
                     <div class="modal_image_slider">
 
                     </div>
-                    <button class="img_slider_icon" id = "img_slider_icon_next">
+                    <button class="img_slider_icon" id = "img_slider_icon_next" style="display: none">
                         <svg aria-label="오른쪽 방향 아이콘" color="#ffffff" fill="#ffffff" height="16" role="img" viewBox="0 0 24 24" width="16"><polyline fill="none" points="8 3 17.004 12 8 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg>
                     </button>
                     <button class="img_slider_icon">
@@ -83,6 +82,87 @@
                 </div>
             </div>
         </div>
+        <div class="post_upload_image" id="image_filter" style="display: none">
+            <div>
+                <button class="back_button"><svg aria-label="돌아가기" color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="2.909" x2="22.001" y1="12.004" y2="12.004"></line><polyline fill="none" points="9.276 4.726 2.001 12.004 9.276 19.274" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg></button>
+                <span class="post_upload_header">편집</span>
+                <button class="next_button" id="next_button" style="font-size: 14px; color:#0095f6">다음</button>
+            </div>
+            <div class="modal_image_container">
+                <div class="filter_canvas_slider" id = "filter_canvas_slider">
+                    <input type="hidden" value="0" id = "canvas_slider_number">
+                    <button class="canvas_slider_button" id="prev_canvas">
+                        <svg aria-label="왼쪽 방향 아이콘" class="_8-yf5 " color="#ffffff" fill="#ffffff" height="16" role="img" viewBox="0 0 24 24" width="16"><polyline fill="none" points="16.502 3 7.498 12 16.502 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg>
+                    </button>
+                    <button class="canvas_slider_button" id="next_canvas">
+                        <svg aria-label="오른쪽 방향 아이콘" class="_8-yf5 " color="#ffffff" fill="#ffffff" height="16" role="img" viewBox="0 0 24 24" width="16"><polyline fill="none" points="8 3 17.004 12 8 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg>
+                    </button>
+                </div>
+                <div class="filter_div expansion" id="filter_div" style="opacity: 0">
+                    <div style="flex-direction: row;">
+                        <div class="filter_text" id="filter_text" style="color:black; border-bottom: 1px solid black"> 필터 </div>
+                        <div class="filter_text" id="modify-text"> 조정 </div>
+                    </div>
+                    <div class="filter_list" id="filter_list">
+                        <button class="filter filter_selected" id="filter_original">
+                            <img src = "http://minstagram.kro.kr/static/images/original.jpg">
+                            <span>원본</span>
+                        </button>
+                        <button class="filter" id = "filter_grayscale">
+                            <img src = "http://minstagram.kro.kr/static/images/gray_filter.jpg">
+                            <span>Gray</span>
+                        </button>
+                        <div class="filter">
 
+                        </div>
+                    </div>
+                    <div class="filter_modify" id = "filter_modify">
+
+                    </div>
+                </div>
+                <div class="expansion upload_comment" id="upload_comment" style="display: none">
+                    <div class="upload_comment_write">
+                        <div class="upload_user_info">
+                            <img class="" src="{{profile_image}}">
+                            <span class="">{{insta}}</span>
+                        </div>
+                        <div>
+                            <textarea spellcheck = "false" class="upload_user_comment" id = "upload_user_comment"></textarea>
+                        </div>
+                        <div style="padding: 15px 20px; justify-content: space-between; border-bottom: 1px solid #c7c7c7">
+                            <div><svg aria-label="이모티콘" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="20" role="img" viewBox="0 0 24 24" width="20"><path d="M15.83 10.997a1.167 1.167 0 101.167 1.167 1.167 1.167 0 00-1.167-1.167zm-6.5 1.167a1.167 1.167 0 10-1.166 1.167 1.167 1.167 0 001.166-1.167zm5.163 3.24a3.406 3.406 0 01-4.982.007 1 1 0 10-1.557 1.256 5.397 5.397 0 008.09 0 1 1 0 00-1.55-1.263zM12 .503a11.5 11.5 0 1011.5 11.5A11.513 11.513 0 0012 .503zm0 21a9.5 9.5 0 119.5-9.5 9.51 9.51 0 01-9.5 9.5z"></path></svg></div>
+                            <div class="cpcc7" style="font-size: 12px;"><span>0</span><span>/</span><span>2,200</span></div>
+                        </div>
+                        <div style="height: 45px; border-bottom: 1px solid #c7c7c7; padding:0 20px; justify-content: space-between; align-items: center">
+                            <span style="font-size: 16px">위치 추가</span>
+                            <svg aria-label="위치 추가" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="16" role="img" viewBox="0 0 24 24" width="16"><path d="M12.053 8.105a1.604 1.604 0 101.604 1.604 1.604 1.604 0 00-1.604-1.604zm0-7.105a8.684 8.684 0 00-8.708 8.66c0 5.699 6.14 11.495 8.108 13.123a.939.939 0 001.2 0c1.969-1.628 8.109-7.424 8.109-13.123A8.684 8.684 0 0012.053 1zm0 19.662C9.29 18.198 5.345 13.645 5.345 9.66a6.709 6.709 0 0113.417 0c0 3.985-3.944 8.538-6.709 11.002z"></path></svg>
+                        </div>
+                        <div style="height: 45px; border-bottom: 1px solid #c7c7c7; padding:0 20px; justify-content: space-between; align-items: center">
+                            <span style="font-size: 16px">접근성</span>
+                            <svg aria-label="아래쪽 V자형 아이콘" class="_8-yf5 " color="#262626" fill="#262626" height="16" role="img" viewBox="0 0 24 24" width="16"><path d="M21 17.502a.997.997 0 01-.707-.293L12 8.913l-8.293 8.296a1 1 0 11-1.414-1.414l9-9.004a1.03 1.03 0 011.414 0l9 9.004A1 1 0 0121 17.502z"></path></svg>
+                        </div>
+                        <div style="height: 45px; border-bottom: 1px solid #c7c7c7; padding:0 20px; justify-content: space-between; align-items: center">
+                            <span style="font-size: 16px">고급 설정</span>
+                            <svg aria-label="아래쪽 V자형 아이콘" class="_8-yf5 " color="#262626" fill="#262626" height="16" role="img" viewBox="0 0 24 24" width="16"><path d="M21 17.502a.997.997 0 01-.707-.293L12 8.913l-8.293 8.296a1 1 0 11-1.414-1.414l9-9.004a1.03 1.03 0 011.414 0l9 9.004A1 1 0 0121 17.502z"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal_background_post_exit" style="display: none" id="post_upload_exit">
+    <div id="modal_container_exit">
+        <div style="justify-content: center;align-items: center; flex-direction: column; flex:1">
+            <span style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">게시물을 삭제하시겠어요?</span>
+            <span style="font-size: 14px; color: #8e8e8e">지금 나가면 수정 내용이 저장되지 않습니다.</span>
+        </div>
+        <button id = 'del_picture_button'style="color: red">
+            삭제
+        </button>
+        <button id="del_picture_cancel_button">
+            취소
+        </button>
     </div>
 </div>

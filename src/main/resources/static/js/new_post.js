@@ -1,7 +1,6 @@
 let files = [];
 let order = [];
 let page = 0;
-let drag = false;
 $(document).ready(function () {
     addEvent();
     modal_resize();
@@ -50,9 +49,6 @@ function addEvent(){
     $('.modal_background_post').on('click', modal_close);
     // 모달창 리사이즈
     $(window).resize(modal_resize);
-    $(document).on('click', function (e){
-        drag = false;
-    })
     // 이미지 슬라이드 다음 버튼
     $($('.img_slider_icon')[0]).on('click', prev_img);
     $($('.img_slider_icon')[1]).on('click', next_img);
@@ -72,6 +68,20 @@ function addEvent(){
     $('.img_slider_icon').eq(2).one('click', dis_cut);
     $('.img_slider_icon').eq(3).one('click', dis_zoom);
     $('.img_slider_icon').eq(4).one('click', dis_mini);
+    $('#prev_canvas').on('click', prevCanvas);
+    $('#next_canvas').on('click', nextCanvas);
+
+    $(".filter").on('click', setFilter);
+    $('.next_button').on('click', next);
+    $('.back_button').on('click', back);
+
+    $('.filter_text').on('click', changeFilterText);
+
+    $('#del_picture_cancel_button').on('click', function(){
+        $('#post_upload_exit').hide();
+        $('#del_picture_button').off('click');
+    })
+
 
 }
 function Drag(e){
@@ -89,7 +99,7 @@ function Drag(e){
     let moveHeight = move.height() * lastScale;
     let startX = e.pageX - lastOffsetX, startY = e.pageY - lastOffsetY;
     move.css("cursor", "grabbing");
-    drag = true;
+    $('.modal_background_post').off("click");
     function onMouseMove(e){
         $('body').css("cursor", "grabbing");
         newX = e.pageX - startX;
@@ -123,15 +133,15 @@ function Drag(e){
         })
     }
 
-    $(document).mousemove(onMouseMove);
-    $(document).on('mouseup', function (){
+    $(window).mousemove(onMouseMove);
+    $(window).on('mouseup', function (){
 
         //커서 오토로 변경
         $('body').css("cursor", "auto");
         // 커서 그랩으로 변경
         move.css("cursor", "grab");
         // 마우스 move 이벤트 해제
-        $(document).off("mousemove");
+        $(window).off("mousemove");
         // 영역 넘어가는거 확인
 
         lastOffset = move.data('last');
@@ -163,28 +173,68 @@ function Drag(e){
                 transform : 'translate(' + miniX + 'px, '+miniY+'px) scale('+ lastScale +','+ lastScale+')'
             }
         })
-        $(document).off('mouseup')
+        $(window).off('mouseup')
+    })
+    $(window).on('click',function (){
+        $('.modal_background_post').on("click", modal_close);
+        $(window).off('click');
+        return false;
+    })
+    $(this).on('click', function (e){
+        $('.modal_background_post').on("click", modal_close);
+        $(this).off(e);
+        return false;
     })
 }
-function modal_close(){
-    if(!drag) {
+function modal_close(e){
+    console.log("클로즈")
+
+    if(page === 0){
+        $('#new_post_icon_select').hide()
+        $('#new_post_icon').show();
+        $('body').removeAttr('style');
         $(".modal_background_post").css("display", "none");
+    }else{
+        show_exit(false);
     }
+
+
 }
 function modal_resize(){
     let window_width = window.innerWidth;
     let window_height = window.innerHeight;
     let side = 0;
-    if(window_width > window_height){
-        side = window_height * 0.7;
-
-        $('.modal_image_container').width(side).height(side);
-
+    let min = Math.min(window_height, window_width);
+    console.log("min",min);
+    if(window_width < 678){
+        console.log("1번")
+        side = 339;
+    }else if(min * 0.6 + 339 < window_width){
+        console.log("2번")
+        side = min-339;
     }else{
-        side = window_width * 0.7;
-
-        $('.modal_image_container').width(side).height(side);
+        console.log("3번")
+        side = min*0.6;
     }
+    console.log("side", side)
+    $('.modal_image_container').width(side).height(side);
+    switch (page){
+        case 3:
+        case 2:
+            $('#filter_canvas_slider').width(side);
+            $('.filter_canvas').width(side).height(side);
+            $('.modal_image_container').width(side+339);
+        case 1:
+            let d = $('.drag');
+            for(let i = 0; i<d.length; i++){
+                let min = d.eq(i).width() < d.eq(i).height() ? d.eq(i).width() : d.eq(i).height();
+                let rate = side/min;
+                console.log(rate);
+                d.eq(i).width(d.eq(i).width()*rate).height(d.eq(i).height()*rate);
+            }
+        case 0:
+    }
+
 }
 function set_images(image_files){
 
@@ -270,8 +320,25 @@ function next(){
             page++;
             break
         case 1:
-            break
+            toFilter();
+            $("#image_edit").css("display", "none");
+            $("#image_filter").css("display", "flex");
+            page++;
+
+            break;
+        case 2:
+            $('.post_upload_header').eq(2).html('새 게시물 만들기');
+            $('#filter_div').hide();
+            $('#upload_comment').fadeIn();
+            $('#next_button').html('공유하기');
+            page++;
+            break;
+        case 3:
+            upload();
     }
+    console.log(files);
+    console.log(page);
+    console.log(order)
 
 }
 function back(){
@@ -279,11 +346,27 @@ function back(){
         case 0:
             break
         case 1:
-            $("#image_edit").css("display", "none");
-            $("#image_pick").css("display", "flex");
-            files = [];
-            page--;
+            console.log("showeixt");
+            show_exit(true)
             break
+        case 2:
+            $("#image_filter").css("display", "none");
+            $("#image_edit").css("display", "flex");
+            $('.modal_image_container').animate({
+                width : $('.modal_image_container').width() - 339
+            },100)
+            $('#filter_div').css('opacity', 0);
+            delCanvas();
+            page--;
+            break;
+        case 3:
+            $('.post_upload_header').eq(2).html('편집');
+            $('#upload_comment').hide();
+            $('#filter_div').fadeIn();
+            $('#next_button').html('다음');
+            page--;
+            break;
+
     }
 }
 function next_img(e){
@@ -304,7 +387,7 @@ function next_img(e){
         dots.removeAttr('style');
         $(dots[next]).css('background-color', '#0095f6');
     if(next === n.attr("max")){
-        $(this).css('display', 'none');
+        $('#img_slider_icon_next').css('display', 'none');
     }
 
     let images = $('.img_slider_gallery_img');
@@ -348,7 +431,7 @@ function prev_img(e){
         dots.removeAttr('style');
         $(dots[prev]).css('background-color', '#0095f6');
     if(prev === "0"){
-        $(this).css('display', 'none');
+        $('#img_slider_icon_prev').css('display', 'none');
     }
     let images = $('.img_slider_gallery_img');
     images.removeClass('img_slider_gallery_img_focus');
@@ -378,7 +461,7 @@ function cut_img(e){
     switch (index){
         case 0:
             // 1:1
-            slider.animate({width: '100%', height: '100%'});
+            slider.animate({width: '100%', height: '100%'},400, resize_img(index));
             $($(this).parent().children().children().get()).css({fill: "#8e8e8e", color: "#8e8e8e"})
             $($(this).children().get()).css({fill: "white", color: "white"})
 
@@ -386,19 +469,18 @@ function cut_img(e){
         case 1:
             // 4:5
             let width = side / 5 * 4;
-            slider.animate({width: width, height: '100%'});
+            slider.animate({width: width, height: '100%'},400, resize_img(index));
             $($(this).parent().children().children().get()).css({fill: "#8e8e8e", color: "#8e8e8e"})
             $($(this).children().get()).css({fill: "white", color: "white"})
             break;
         case 2:
             // 16:9
             let height = side / 16 * 9;
-            slider.animate({width: '100%', height: height});
+            slider.animate({width: '100%', height: '56.25%'},400, resize_img(index));
             $($(this).parent().children().children().get()).css({fill: "#8e8e8e", color: "#8e8e8e"})
             $($(this).children().get()).css({fill: "white", color: "white"})
             break;
     }
-    resize_img(index);
     return false;
 }
 function resize_img(n){
@@ -571,7 +653,8 @@ function drag_mini_click(e){
 function add_images(image_files){
     let nInput = $('#nth-img');
     let first = nInput.val() === "-1";
-
+    console.log('first', first);
+    console.log('page',page);
     for(let i = 0; i < image_files.length; i++){
         let file = image_files[i];
         let src = URL.createObjectURL(file);
@@ -619,7 +702,7 @@ function add_images(image_files){
                 slider.append(drag);
                 galleryImg.append(dragMini);
                 $('.img_slider_dots').append($('<div class="img_slider_dot"></div>'));
-                files.push({"file": file})
+                files.push({"file": file, "image": img, "width": img.width, "height": img.height})
                 // for 끝나고 실행
 
                 if(i === image_files.length-1){
@@ -644,12 +727,19 @@ function add_images(image_files){
                         $('.drag').eq(0).css('display', "flex");
                         $('.img_slider_gallery_img').eq(0).addClass("img_slider_gallery_img_focus");
                         nInput.val('0');
+
+                        $('#img_slider_icon_prev').css('display','none');
                         if(files.length === 1){
                             $('#img_slider_icon_next').css('display','none');
+                        }else{
+                            $('#img_slider_icon_next').css('display','flex');
                         }
 
-
+                    }else{
+                        $('#img_slider_icon_next').css('display','flex');
                     }
+
+
                 }
             }
     }
@@ -707,7 +797,6 @@ function dis_cut(){
     }, 100)
     //$(this).children().eq(1).fadeIn(300);
     $(window).on('mousedown', function(e){
-        let target = $('#img_cut');
         if(target.has(e.target).length === 0){
 
             target.animate({
@@ -724,27 +813,290 @@ function dis_cut(){
     })
 }
 function dis_zoom(){
-    $(this).children().eq(1).css('display','flex');
-    $(window).on('mousedown', function(e){
-        let target = $('#zoom_div');
+    let index = $("#nth-img").val();
+    let move = $($('.drag')[order[index]]);
+    let last = move.data('last');
+    let lastScale = last ? last.scale : 1;
+    $("#zoom_input").val((lastScale-1)*100);
+    let target = $('#zoom_div');
+    target.css('opacity', '0');
+    target.css('display', 'flex');
+    target.animate({
+        bottom: 48,
+        opacity : '1'
+    }, 100)
+    $(window).on('mousedown', function (e){
         if(target.has(e.target).length === 0){
-            target.hide();
+            target.animate({
+                bottom:28,
+                opacity : '0'
+            }, 100, function (){
+                $('.img_slider_icon').eq(3).one('click', dis_zoom);
+                target.removeAttr('style');
+            })
             $(this).off(e);
         }
+
     })
 }
 function dis_mini(){
-    $(this).next().css('display','flex');
-    if($('#img_slider_gallery_slider').width() !== $('#img_slider_gallery_list').width()){
-        $('#img_slider_icon_mini_next').css('display', 'flex');
+    let slider = $('#img_slider_gallery_slider');
+    let list = $('#img_slider_gallery_list')
+    list.css('left', 0);
+    $('#img_slider_icon_mini_prev').hide();
+    let target = $('#img_slider_gallery');
+    target.css('opacity', '0');
+    target.css('display', 'flex');
+    if(slider.width() !== list.width()){
+        $('#img_slider_icon_mini_next').show()
     }
-    $(window).on('mousedown', function(e){
-        let target = $('#img_slider_gallery');
+    target.animate({
+        bottom: 56,
+        opacity : '1'
+    }, 100)
+    $(window).on('mousedown', function (e){
         if(target.has(e.target).length === 0){
-            target.hide();
+            target.animate({
+                bottom:36,
+                opacity : '0'
+            }, 100, function (){
+                $('.img_slider_icon').eq(4).one('click', dis_mini);
+                target.removeAttr('style');
+            })
             $(this).off(e);
         }
+
     })
 
 }
+function showFiles(){
+    console.log(files);
+}
+function toFilter(){
+    setCanvas();
+    let container = $('.modal_image_container')
+    $('#filter_canvas_slider').width(container.width())
+    container.animate({
+        width: container.width()+339
+    }, 100, function(){
+        $("#filter_div").animate({
+            opacity : 1
+        })
+    })
 
+}
+function setCanvas(){
+    let n = parseInt($('#nth-img').val());
+    let slider = $('.modal_image_slider');
+    let drag = $('.drag');
+    let input = $("#canvas_slider_number");
+        input.attr('max', drag.length-1);
+        input.val(n);
+    console.log("m", n);
+    if( n === 0){
+        console.log("n", "n=0");
+        $('#prev_canvas').hide();
+        $('#next_canvas').show();
+        if( n === drag.length-1){
+            $('#next_canvas').hide();
+        }
+    }else if(n === drag.length-1){
+        $('#prev_canvas').show();
+        $('#next_canvas').hide();
+    }else{
+        $('#prev_canvas').show();
+        $('#next_canvas').show();
+    }
+
+    if(drag.length === 1){
+        $('#next_canvas').hide();
+    }
+    for(let i = 0; i < drag.length; i++){
+        let img = files[order[i]].image
+        let imgW = img.width, imgH = img.height;
+        console.log("imgW: " + imgW + " imgH: " + imgH)
+        let d = drag.eq([order[i]]);
+        let dW = d.width(), dH = d.height();
+        let data = d.data('last');
+        let tx = data ? data.dx : 0,
+            ty = data ? data.dy : 0,
+            scale = data ? data.scale : 1;
+        console.log("tx: "+tx+" ty: "+ ty + " scale: " + scale);
+        let cW = slider.width(), cH = slider.height();
+        console.log(cW, cH);
+        let canvas = document.createElement('canvas');
+            canvas.width = slider.width();
+            canvas.height = slider.height();
+            $(canvas).addClass('filter_canvas');
+            if(i !== n ) $(canvas).hide();
+        let ctx = canvas.getContext('2d');
+        let min = img.width > img.height ? img.height:img.width
+        let sx = (((dW*scale)-cW)/2-tx)*(imgW / dW / scale);
+        let sy = (((dH*scale)-cH)/2-ty)*(imgH/dH/scale);
+        let sw = cW*imgW/dW/scale;
+        let sh = cH*imgH/dH/scale;
+        d.data('cut', {sx: sx, sy:  sy, sw: sw, sh: sh})
+        ctx.drawImage(img, (((dW*scale)-cW)/2-tx)*(imgW / dW / scale), (((dH*scale)-cH)/2-ty)*(imgH/dH/scale),
+            sw, sh, 0, 0, canvas.width, canvas.height)
+        $('#filter_canvas_slider').append(canvas);
+    }
+    getFilter();
+}
+function delCanvas(){
+    $('.filter_canvas').remove();
+}
+function nextCanvas(){
+    console.log('next');
+    let input = $('#canvas_slider_number');
+    let n = parseInt(input.val());
+    let canvases = $('.filter_canvas');
+    canvases.hide()
+    canvases.eq(n+1).show()
+    input.val(n+1);
+    if(input.val() === input.attr('max')){
+        $(this).hide();
+    }
+    $('#prev_canvas').show();
+    getFilter();
+    next_img();
+}
+function prevCanvas(){
+    console.log("prev");
+    let input = $('#canvas_slider_number');
+    let n = parseInt(input.val());
+    let canvases = $('.filter_canvas');
+    canvases.hide()
+    canvases.eq(n-1).show()
+    input.val(n-1);
+    if(input.val() === "0"){
+        $(this).hide();
+    }
+    $('#next_canvas').show();
+    getFilter();
+    prev_img();
+}
+function getFilter(){
+    let n = parseInt($('#canvas_slider_number').val());
+    let d = $('.drag').eq(order[n]);
+    let filter = d.data('filter') ? d.data('filter') : 'original';
+    let id = '#filter_' + filter;
+    $('.filter').removeClass('filter_selected');
+    $(id).addClass('filter_selected');
+    let target = $('.filter_canvas').eq(n);
+        target.addClass(filter);
+
+}
+function setFilter(){
+    $('.filter').removeClass('filter_selected');
+    $(this).addClass('filter_selected');
+    console.log($(this).children('span'));
+
+    let n = parseInt($('#canvas_slider_number').val());
+    let d = $('.drag').eq(order[n]);
+    let target = $('.filter_canvas').eq(n);
+        target.removeClass();
+        target.addClass('filter_canvas');
+    switch ($(this).children('span').html()){
+        case '원본':
+            d.data('filter', 'original');
+            break;
+        case 'Gray':
+            d.data('filter', 'grayscale');
+            target.addClass('grayscale');
+            break;
+    }
+}
+function changeFilterText(){
+    let text = $('.filter_text');
+        text.removeAttr('style');
+    switch ($(this).index()){
+        case 0:
+            text.eq(0).animate({
+                borderBottomColor : '#000000',
+                color : '#000000'
+            })
+            $('#filter_modify').hide()
+            $('#filter_list').show()
+            break;
+        case 1:
+            text.eq(1).animate({
+                borderBottomColor : '#000000',
+                color : '#000000'
+            })
+            $('#filter_list').hide()
+            $('#filter_modify').show()
+            break;
+    }
+
+}
+
+function init(){
+    $('#nth-img').val('-1');
+    $('.drag').remove();
+    $('.img_slider_dot').remove();
+    $('.img_slider_gallery_img').remove();
+    files = [];
+    order = [];
+    page = 0;
+    $('.post_upload_image').hide();
+    $('.post_upload_image').eq(0).show();
+    $('#post_upload_exit').hide();
+    delCanvas();
+    modal_resize();
+
+}
+function show_exit(state){
+    $('#del_picture_button').off('click');
+    let target = $("#modal_container_exit");
+    $('#post_upload_exit').show()
+    $('#post_upload_exit').on('mousedown', function(e){
+        if(target.has(e.target).length === 0){
+            $('#post_upload_exit').hide();
+            $(this).off(e);
+            $('#del_picture_button').off('click');
+        }
+    })
+    if(state){
+        $('#del_picture_button').on('click', init);
+    }else{
+        $('#del_picture_button').on('click', function (){
+            init();
+            $('#new_post_icon_select').hide()
+            $('#new_post_icon').show();
+            $('body').removeAttr('style');
+            $('.modal_background_post').hide();
+        });
+    }
+}
+function upload(){
+    let formData = new FormData();
+    let param = [];
+    for(let i = 0; i<files.length; i++){
+        let d = $('.drag').eq(order[i]);
+        let cut = d.data('cut');
+        let filter = d.data('filter') ? d.data('filter') : 'original';
+        let data = {
+            filter : filter,
+            sx : cut.sx,
+            sy : cut.sy,
+            sw : cut.sw,
+            sh : cut.sh,
+        }
+        formData.append('files', files[order[i]].file);
+        param.push(data);
+    }
+    formData.append('fileData', JSON.stringify(param));
+    formData.append('comment', $('#upload_user_comment').val())
+    $.ajax({
+        type : "POST",
+        url : '/test/file',
+        data : formData,
+        processData : false,
+        contentType : false,
+        success : function (data){
+            console.log("Success");
+        }
+
+
+    })
+}

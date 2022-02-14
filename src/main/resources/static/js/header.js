@@ -17,6 +17,14 @@ $(document).ready(function () {
     $(".user_icon").click(function (){
         $(".header_dropdown").css("display", "flex");
     });
+
+    $('#new_post_icon').on('click', function (e){
+        console.log("클뤽")
+        $(this).hide();
+        $('#new_post_icon_select').show();
+        $('.modal_background_post').show();
+        $('body').css('overflow', 'hidden');
+    })
 });
 
 function search_focus(){

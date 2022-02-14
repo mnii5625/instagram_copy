@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -55,25 +57,27 @@ public class UserRequest {
     @Getter
     @Setter
     public static class Comment{
-        private String bundle;
+        private String bundle = "";
         private String comment;
         private int depth;
         private String insta;
-        private List<String> like;
-        private Date date;
-        private List<Comment> replies;
+        private List<String> like = new ArrayList<>();
+        private Date date = new Date();
+        private List<Comment> replies = new ArrayList<>();
         private String post;
     }
 
     @Getter
     @Setter
     public static class Post{
+        private String id;
         private String comment;
         private String insta;
-        private List<String> like;
-        private Date date;
+        private String profileImage;
+        private List<String> like = new ArrayList<>();
+        private Date date = new Date();
         private List<String> images;
-        private List<Comment> comments;
+        private List<Comment> comments = new ArrayList<>();
     }
 
     @Getter
@@ -98,4 +102,31 @@ public class UserRequest {
         private String insta;
         private boolean enabled;
     }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class uploadData{
+        List<UserRequest.imageData> imageData = new ArrayList<>();
+        String comment;
+        String insta;
+        public uploadData(String comment, String insta){
+            this.comment = comment;
+            this.insta = insta;
+        }
+    }
+
+
+    @Getter
+    @Setter
+    @ToString
+    public static class imageData{
+        MultipartFile file;
+        private String filter;
+        private float sx;
+        private float sy;
+        private float sw;
+        private float sh;
+    }
+
 }

@@ -86,9 +86,16 @@ public class PostController {
     }
     @PostMapping("/header/recently/deleteAll")
     public ResponseEntity<?> DeleteAll(Authentication auth){
-        UserDetails user = (UserDetails)  auth.getPrincipal();
+        UserDetails user = (UserDetails) auth.getPrincipal();
         log.info(user.getInsta());
         return searchRepository.delAllRecentlySearch(user.getInsta());
+    }
+    @PostMapping("/getPost")
+    @ResponseBody
+    public ResponseEntity<?> getPost(@RequestParam("id") String id,
+                                     Authentication auth){
+        User user = userService.getUserInfo(auth.getName());
+        return postRepository.getPost(id);
     }
 
 }

@@ -160,8 +160,8 @@ public class UserService {
     public ResponseEntity<?> changeProfileImage(String insta, MultipartFile file){
         try {
             String[] splitFileName = file.getOriginalFilename().split("\\.");
-            String extension =  splitFileName[splitFileName.length-1];
-            String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0, 15)+ "." + extension;
+            String imageType =  splitFileName[splitFileName.length-1];
+            String uuid = UUID.randomUUID().toString().replaceAll("-","").substring(0, 15)+ "." + imageType;
             log.info("profile_image_file_name : " + uuid);
             File newFile = new File(uuid);
             file.transferTo(newFile);
@@ -174,6 +174,7 @@ public class UserService {
     public ResponseEntity<?> edit(String insta, UserRequest.Edit edit){
         return response.fail("미구현 입니다...", HttpStatus.NOT_IMPLEMENTED);
     }
+
     public Map<String, Object> UserMap(UserDetails user){
         Map<String, Object> map = new HashMap<>();
         map.put("insta", user.getInsta());

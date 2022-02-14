@@ -2,6 +2,10 @@
 
 $(document).ready(function () {
     Posts(5, "", new Date());
+
+    $('.post_right_button').on('click', image_right_slide);
+    $('.post_left_button').on('click', image_left_slide);
+    $('.post_write_comment_button').on('click', uploadComment);
 });
 function Posts(n, insta, date) {
     $.ajax({
@@ -15,7 +19,7 @@ function Posts(n, insta, date) {
         },
         success: function (response) {
             for(let i = 0; i < response.data.length; i++){
-                setPost(response.data[i]);
+                setP(response.data[i]);
             }
             //console.log(response);
             //setPost(response.data);
@@ -23,6 +27,7 @@ function Posts(n, insta, date) {
     })
 }
 function setPost(data){
+    console.log(data)
     let post = $('<div class="post"></div>');
     // 게시물 헤더
     let postHeader = $('<div class="post_header"></div>');
@@ -184,7 +189,7 @@ function time(date){
         }else{
             let hour = Math.floor(minute / 60);
             if(hour < 24){
-                return hour + "시 전";
+                return hour + "시간 전";
             }
             else{
                 let day = Math.floor(hour / 24);
@@ -201,37 +206,49 @@ function time(date){
     }
 }
 function image_right_slide(e){
-    let val = parseInt($(e).prev().prev().val());
-    let min = parseInt($(e).prev().prev().attr('min'));
-    let max = parseInt($(e).prev().prev().attr('max'));
-    $(e).prev().prev().val(val + 1);
-    if(val+1 == max){
-        $(e).css("display","none");
+    let post = $(this).parents('.post');
+
+    let input = post.find('input')
+    console.log(post)
+    let n = Number(input.val());
+    let max = Number(input.attr('max'));
+    let slider = post.find('.post_images');
+
+    if(n+1 === max){
+        $(this).hide();
     }
-    if(val == min){
-        $(e).prev().prev().prev().css("display","block");
-    }
-    $(e).prev().animate({marginLeft: ((val+1) * -598) + "px"}, 300);
-    $(e).next().next().animate({marginLeft: ((val-1) * -598) + "px"}, 300);
-    let dots = $(e).parents().next(".post_images_dots");
+    post.find('.post_left_button').show();
+    let left = -598 * (n+1)
+    slider.animate({
+        left: left
+    },300)
+    let dots = post.find('.post_images_dots');
     dots.children().css("background-color", "#a8a8a8");
-    dots.children().eq(val+1).css("background-color", "#0095f6");
+    dots.children().eq(n+1).css("background-color", "#0095f6");
+    input.val(n+1);
+
+
 }
 function image_left_slide(e){
-    let val = parseInt($(e).next().val());
-    let min = parseInt($(e).next().attr('min'));
-    let max = parseInt($(e).next().attr('max'));
-    $(e).next().val(val - 1);
-    if(val-1 == min){
-        $(e).css("display","none");
+    let post = $(this).parents('.post');
+
+    let input = post.find('input')
+    console.log(post)
+    let n = Number(input.val());
+    let slider = post.find('.post_images');
+
+    if(n-1 == 0){
+        $(this).hide();
     }
-    if(val == max){
-        $(e).next().next().next().css("display","block");
-    }
-    $(e).next().next().animate({marginLeft: ((val-1) * -598) + "px"}, 300);
-    let dots = $(e).parents().next(".post_images_dots");
+    post.find('.post_right_button').show();
+    let left = -598 * (n-1)
+    slider.animate({
+        left: left
+    },300)
+    let dots = post.find('.post_images_dots');
     dots.children().css("background-color", "#a8a8a8");
-    dots.children().eq(val-1).css("background-color", "#0095f6");
+    dots.children().eq(n-1).css("background-color", "#0095f6");
+    input.val(n-1);
 }
 function resize(e){
     $(e).height("18px");
@@ -244,3 +261,94 @@ function resize(e){
         $(e).height(e.scrollHeight);
     }
 }
+function setP(data){
+    //console.log(data);
+    let clone = $('#post_clone').clone(true);
+        clone.data('id', data.id);
+        clone.find('.post_user_img').attr('src', "http://minstagram.kro.kr/static/images/" + data.profileImage);
+        clone.find('.post_user_img').src = 'http://minstagram.kro.kr/static/images/' + data.profileImage;
+        clone.find('.post_name').html(data.insta);
+
+        let post_images = clone.find('.post_images')
+
+        let post_images_dots = clone.find('.post_images_dots');
+            if(data.images.length === 1){
+                post_images_dots.hide();
+                clone.find('.post_right_button').hide();
+            }
+            for(let i = 0; i< data.images.length; i++){
+                let dot = $('<div class="post_images_dot"></div>')
+                if(i === 0){
+                    dot.css("background-color", "#0095f6");
+                }
+                post_images_dots.append(dot);
+                let img = $('<img>');
+                let src = 'http://minstagram.kro.kr/static/images/' + data.images[i];
+                    img[0].src = src
+                post_images.append(img);
+            }
+        let input = clone.find('input');
+            input.attr('max', data.images.length-1);
+        if(data.like.includes($('#insta').val())){
+            clone.find('.post_like_icon').children('svg').css({
+                fill : '#ed4956'
+            })
+        }
+        if(data.like.length > 1){
+            let postLike = clone.find('.post_like');
+            let user = randomLikeUser(data["like"]);
+            postLike.append($('<a class="post_insta" href=/'+ user +'>'+ user +'</a>'));
+            postLike.html(postLike.html() + "님&nbsp;");
+            postLike.append($('<button class="post_comment_button">여러 명</button>'))
+            postLike.html(postLike.html() + "이 좋아합니다");
+        }else if(data.like.length === 1){
+            let postLike = clone.find('.post_like');
+            postLike.append($('<a class="post_insta" href=/'+ data["like"][0] +'>'+ data["like"][0] +'</a>'));
+            postLike.html(postLike.html() + "님이 좋아합니다");
+        }
+        let comments = getAllComments(data.comments);
+        for(let i =0; i<comments.length; i++){
+            let postComments = $('<div class="post_comment"></div>')
+            let c = comments[i];
+            let span = $('<span></span>')
+            span.html('<a class="post_insta" href=/'+c["insta"]+'>'+c["insta"]+'</a>\n')
+            span.append(c["comment"]);
+            postComments.append(span)
+            //postComments.append(c["comment"]);
+            clone.find('.post_comments').append(postComments);
+        }
+        clone.find(".post_time").html(time(data.date));
+        clone.removeAttr('style');
+        $('#main_left').append(clone);
+}
+function uploadComment(e){
+    let post = $(this).parents('.post')
+    let id = post.data('id');
+    let textarea = post.find('.post_write_comment_textarea');
+    let comment = textarea.val();
+    if(comment !== ""){
+        $.ajax({
+            url: 'test/comment',
+            data: {
+                id : id,
+                comment : comment,
+            },
+            method : "POST",
+            dataType: "Json",
+            success : function(data){
+                console.log('성공', data);
+                if(data.state === 200){
+                    let postComments = $('<div class="post_comment"></div>')
+                    let span = $('<span></span>')
+                    span.html('<a class="post_insta" href=/'+ $("#insta").val() +'>'+ $("#insta").val() +'</a>\n')
+                    span.append(comment);
+                    postComments.append(span)
+                    post.find('.post_comments').append(postComments);
+                    textarea.val("");
+                }
+            }
+        })
+    }
+}
+
+

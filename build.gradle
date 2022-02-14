@@ -38,7 +38,11 @@ dependencies {
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	// mysql
+	// https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor
+	implementation group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.6.2'
+
 	compileOnly 'org.projectlombok:lombok'
+	implementation 'org.imgscalr:imgscalr-lib:4.2'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

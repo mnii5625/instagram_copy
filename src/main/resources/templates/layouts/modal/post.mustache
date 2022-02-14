@@ -1,0 +1,125 @@
+<style>
+    #post_background{
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.85);
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        z-index: 100;
+        padding: 24px 64px;
+    }
+    #post_container{
+        background: white;
+
+    }
+    #post_left{
+        min-width: 200px;
+        min-height: 400px;
+    }
+    #post_right{
+        min-width: 400px;
+        max-width: 500px;
+    }
+    #post_slider{
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background: black;
+        position: relative;
+    }
+    #post_slider > img{
+        position: absolute;
+        width: 100%;
+    }
+
+</style>
+<script>
+    let rate;
+    $(document).ready(function () {
+        //post_resize();
+        get_post('iT1no8f3sdWcFnQNjDZd')
+        $(window).resize(post_resize);
+    })
+    function get_post(docId){
+        $.ajax({
+            url:'/getPost',
+            type: 'POST',
+            data:{
+                id : docId
+            },
+            dataType : "JSON",
+            async: false,
+            success : function (response){
+                console.log(response);
+                if(response.state === 200){
+                    initialize(response.data)
+                }
+
+            }
+        })
+    }
+    function initialize(post){
+        console.log('--------------')
+        console.log(post);
+        for(let i = 0; i< post.images.length; i++){
+            let img = new Image();
+            img.src= 'http://minstagram.kro.kr/static/images/' + post.images[i];
+            img.onload = function (){
+                console.log("rate", Math.round(img.width / img.height * 10)/10);
+                if(i === 0){
+                    rate = Math.round(img.width / img.height * 10)/10
+                    post_resize();
+                }
+
+                $('#post_slider').append(img);
+            }
+        }
+        console.log(rate);
+
+
+    }
+
+
+    function post_resize(){
+        let window_width = window.innerWidth;
+        let window_height = window.innerHeight;
+        let src = "http://minstagram.kro.kr/static/images/858f3c42b5344a1.jpg";
+        //console.log(rate)
+
+        let left = $('#post_left');
+        if(window_width-500 > window_height){
+            let side = window_height * 0.9;
+
+            if(rate <= 1){
+                left.width(side * rate).height(side);
+            }else{
+                left.width(side).height(side);
+            }
+        }
+        else{
+            let side = (window_width - 500) * 0.9;
+            if(rate <= 1){
+                left.width(side * rate).height(side);
+            }else{
+                left.width(side).height(side);
+            }
+        }
+    }
+</script>
+
+<div id="post_background">
+    <div id="post_container">
+        <div id="post_left">
+            <div id="post_slider">
+                
+
+            </div>
+        </div>
+        <div id="post_right">
+
+        </div>
+    </div>
+</div>

@@ -43,7 +43,7 @@ public class UserController {
         if(U != null){
             model.addAttribute("user", true);
 
-            int postCount = postRepository.getPost(insta).size();
+            int postCount = postRepository.getAllPost(insta).size();
             List<String> follow = userRepository.getFollow(U.getInsta());
             List<String> follower = userRepository.getFollower(U.getInsta());
             if(user.getInsta().equals(U.getInsta())){

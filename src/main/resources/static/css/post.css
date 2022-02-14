@@ -79,6 +79,27 @@
     font-weight: bold;
     width: 85%;
 }
+.post_image{
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.post_image_slider{
+    width: 100%;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+.post_images{
+    flex-direction: row;
+    position: relative;
+}
+.post_images img{
+    width: 598px;
+
+}
+
+/*
 .post_image_slider{
     display: block;
     width: 100%;
@@ -104,12 +125,14 @@
     height: 100%;
     object-fit: cover;
 }
+
+
 .post_image{
     width: 100%;
     justify-content: center;
     position: relative;
 }
-
+ */
 .post_right_button, .post_left_button{
     background-image: url("/images/Logo.png");
     width: 24px;
@@ -122,12 +145,10 @@
 .post_left_button{
     background-position: -133px -101px;
     left:10px;
-    top:285px;
 }
 .post_right_button{
     background-position: -165px -101px;
     right: 10px;
-    top:285px;
 }
 .post_images_dots{
     position: absolute;
@@ -143,7 +164,6 @@
 
 }
 .post_dots{
-    background-position: -285px -500px;
     width: 24px;
     height: 24px;
     cursor: pointer;
@@ -163,25 +183,21 @@
     align-items: center;
 }
 .post_like_icon{
-    background-position: -468px -473px;
     width: 24px;
     height: 24px;
     margin-right: 15px;
 }
 .post_comment_icon{
-    background-position: -416px -447px;
     width: 24px;
     height: 24px;
     margin-right: 15px;
 }
 .post_share_icon{
-    background-position: -520px -447px;
     width: 24px;
     height: 24px;
 
 }
 .post_bookmark_icon{
-    background-position: -26px -525px;
     width: 24px;
     height: 24px;
 }
@@ -199,8 +215,10 @@
     font-size: 14px;
 }
 .post_comments{
+    flex-direction: column;
+}
+.post_comment{
     margin-bottom: 8px;
-    display: block;
     font-size: 14px;
 }
 .post_comment_button{
@@ -222,7 +240,6 @@
 .post_emoticon{
     width: 24px;
     height: 24px;
-    background: red;
 }
 .post_write_comment_textarea{
     border: none;
