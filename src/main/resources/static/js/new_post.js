@@ -1087,9 +1087,10 @@ function upload(){
     }
     formData.append('fileData', JSON.stringify(param));
     formData.append('comment', $('#upload_user_comment').val())
+    formData.append('rate', String(Math.round( $('.drag').eq(0).data('cut').sw/ $('.drag').eq(0).data('cut').sh * 10)/ 10));
     $.ajax({
         type : "POST",
-        url : '/test/file',
+        url : '/upload',
         data : formData,
         processData : false,
         contentType : false,

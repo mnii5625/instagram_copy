@@ -78,6 +78,7 @@ public class UserRequest {
         private Date date = new Date();
         private List<String> images;
         private List<Comment> comments = new ArrayList<>();
+        private String rate;
     }
 
     @Getter
@@ -110,9 +111,11 @@ public class UserRequest {
         List<UserRequest.imageData> imageData = new ArrayList<>();
         String comment;
         String insta;
-        public uploadData(String comment, String insta){
+        String rate;
+        public uploadData(String comment, String insta, String rate){
             this.comment = comment;
             this.insta = insta;
+            this.rate = rate;
         }
     }
 

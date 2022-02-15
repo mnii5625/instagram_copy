@@ -155,6 +155,7 @@ public class PostRepository {
             post.setInsta(data.getInsta());
             post.setComment(data.getComment());
             post.setImages(imagesName);
+            post.setRate(data.getRate());
 
             db.collection(COLLECTION_POST).document().set(post);
             return response.success("게시물 저장 성공", HttpStatus.OK);
@@ -209,7 +210,7 @@ public class PostRepository {
         int orientation = 1;
         Metadata metadata = ImageMetadataReader.readMetadata(file);
         Directory directory = metadata.getDirectory(ExifIFD0Directory.class);
-        if(directory != null){
+        if(directory != null && directory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)){
             orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
         }
         log.info(String.valueOf(orientation));

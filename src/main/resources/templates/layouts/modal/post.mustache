@@ -37,10 +37,10 @@
 
 </style>
 <script>
-    let rate;
+    let post;
     $(document).ready(function () {
         //post_resize();
-        get_post('iT1no8f3sdWcFnQNjDZd')
+        get_post('3yQFKp37ibxSqkZ1JqBS')
         $(window).resize(post_resize);
     })
     function get_post(docId){
@@ -55,31 +55,29 @@
             success : function (response){
                 console.log(response);
                 if(response.state === 200){
-                    initialize(response.data)
+                    post = response.data;
+                    initialize()
                 }
 
             }
         })
     }
-    function initialize(post){
+    function initialize(){
         console.log('--------------')
         console.log(post);
-        for(let i = 0; i< post.images.length; i++){
+        post_resize();
+        for(let i = 0; i< post.images.length; i++) {
             let img = new Image();
-            img.src= 'http://minstagram.kro.kr/static/images/' + post.images[i];
-            img.onload = function (){
-                console.log("rate", Math.round(img.width / img.height * 10)/10);
-                if(i === 0){
-                    rate = Math.round(img.width / img.height * 10)/10
-                    post_resize();
+            img.src = 'http://minstagram.kro.kr/static/images/' + post.images[i];
+            img.onload = function () {
+                console.log("rate", Math.round(img.width / img.height * 10) / 10);
+                if (i === 0) {
+                    rate = Math.round(img.width / img.height * 10) / 10
+
                 }
-
-                $('#post_slider').append(img);
             }
+            $('#post_slider').append(img);
         }
-        console.log(rate);
-
-
     }
 
 
@@ -87,22 +85,22 @@
         let window_width = window.innerWidth;
         let window_height = window.innerHeight;
         let src = "http://minstagram.kro.kr/static/images/858f3c42b5344a1.jpg";
-        //console.log(rate)
+        console.log(post.rate)
 
         let left = $('#post_left');
         if(window_width-500 > window_height){
             let side = window_height * 0.9;
 
-            if(rate <= 1){
-                left.width(side * rate).height(side);
+            if(post.rate <= 1){
+                left.width(side * post.rate).height(side);
             }else{
                 left.width(side).height(side);
             }
         }
         else{
             let side = (window_width - 500) * 0.9;
-            if(rate <= 1){
-                left.width(side * rate).height(side);
+            if(post.rate <= 1){
+                left.width(side * post.rate).height(side);
             }else{
                 left.width(side).height(side);
             }

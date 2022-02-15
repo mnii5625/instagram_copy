@@ -73,7 +73,7 @@ public class Test {
         return response.success("성공", HttpStatus.OK);
     }
 
-    @PostMapping("test/file")
+    /*@PostMapping("test/file")
     @ResponseBody
     public ResponseEntity<?> files(@RequestParam("fileData") String fileData,
                                    @RequestParam("files") MultipartFile[] files,
@@ -98,7 +98,7 @@ public class Test {
 
         log.info(Data.toString());
         return postRepository.uploadPost(Data);
-    }
+    }*/
     @PostMapping("test/comment")
     @ResponseBody
     public ResponseEntity<?> comment(@RequestParam("id") String id,

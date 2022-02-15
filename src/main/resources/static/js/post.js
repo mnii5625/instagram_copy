@@ -262,7 +262,7 @@ function resize(e){
     }
 }
 function setP(data){
-    //console.log(data);
+    console.log(data);
     let clone = $('#post_clone').clone(true);
         clone.data('id', data.id);
         clone.find('.post_user_img').attr('src', "http://minstagram.kro.kr/static/images/" + data.profileImage);
@@ -306,6 +306,15 @@ function setP(data){
             postLike.append($('<a class="post_insta" href=/'+ data["like"][0] +'>'+ data["like"][0] +'</a>'));
             postLike.html(postLike.html() + "님이 좋아합니다");
         }
+        // 글 내용
+        let post_comment = clone.find('#post_comment');
+            let post_insta = post_comment.find('.post_insta');
+                post_insta.html(data.insta);
+                post_insta.attr('href', '/' + data.insta);
+            let span = post_comment.children('span');
+                span.append('\n'+data.comment);
+
+        // 댓글
         let comments = getAllComments(data.comments);
         for(let i =0; i<comments.length; i++){
             let postComments = $('<div class="post_comment"></div>')

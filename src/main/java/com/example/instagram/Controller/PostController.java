@@ -1,11 +1,16 @@
 package com.example.instagram.Controller;
 
+import com.example.instagram.Entity.Request.UserRequest;
 import com.example.instagram.Entity.Response.Response;
 import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
 import com.example.instagram.Repository.PostRepository;
 import com.example.instagram.Repository.SearchRepository;
 import com.example.instagram.Service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +23,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Date;
 
 @Controller
@@ -96,6 +105,35 @@ public class PostController {
                                      Authentication auth){
         User user = userService.getUserInfo(auth.getName());
         return postRepository.getPost(id);
+    }
+    @PostMapping("upload")
+    @ResponseBody
+    public ResponseEntity<?> files(@RequestParam("fileData") String fileData,
+                                   @RequestParam("files") MultipartFile[] files,
+                                   @RequestParam("comment") String comment,
+                                   @RequestParam("rate") String rate,
+                                   Authentication auth) throws IOException {
+
+        User user = userService.getUserInfo(auth.getName());
+        JsonArray jsonArray = (JsonArray) JsonParser.parseString(fileData);
+        UserRequest.uploadData Data = new UserRequest.uploadData(comment, user.getInsta(), rate);
+        log.info("rate");
+        log.info(rate);
+
+        for(int i = 0; i< files.length; i++){
+            JsonObject object = (JsonObject) jsonArray.get(i);
+            ObjectMapper objectMapper = new ObjectMapper();
+            UserRequest.imageData imageData = objectMapper.readValue(object.toString(), UserRequest.imageData.class);
+            imageData.setFile(files[i]);
+            BufferedImage bufferedImage = ImageIO.read(files[i].getInputStream());
+            log.info("test");
+            log.info(String.valueOf(bufferedImage.getWidth()));
+            log.info(String.valueOf(bufferedImage.getHeight()));
+            Data.getImageData().add(imageData);
+        }
+
+        log.info(Data.toString());
+        return postRepository.uploadPost(Data);
     }
 
 }
