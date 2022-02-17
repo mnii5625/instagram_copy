@@ -312,7 +312,8 @@ function setP(data){
                 post_insta.html(data.insta);
                 post_insta.attr('href', '/' + data.insta);
             let span = post_comment.children('span');
-                span.append('\n'+data.comment);
+                span.append('\n')
+                span.append(Tag(data.comment));
 
         // 댓글
         let comments = getAllComments(data.comments);
