@@ -61,6 +61,7 @@ public class UserRequest {
         private String comment;
         private int depth;
         private String insta;
+        private String profileImage;
         private List<String> like = new ArrayList<>();
         private Date date = new Date();
         private List<Comment> replies = new ArrayList<>();

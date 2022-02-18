@@ -135,5 +135,29 @@ public class PostController {
         log.info(Data.toString());
         return postRepository.uploadPost(Data);
     }
-
+    @PostMapping("comment")
+    @ResponseBody
+    public ResponseEntity<?> comment(@RequestParam("id") String id,
+                                     @RequestParam("comment") String comment,
+                                     Authentication auth){
+        log.info( id);
+        log.info(comment);
+        User user = userService.getUserInfo(auth.getName());
+        UserRequest.Comment Comment = new UserRequest.Comment();
+        Comment.setComment(comment);
+        Comment.setInsta(user.getInsta());
+        Comment.setPost(id);
+        return postRepository.saveComment(Comment);
+    }
+    @PostMapping("reply")
+    @ResponseBody
+    public ResponseEntity<?> reply(@RequestParam("id") String id,
+                                   @RequestParam("comment") String comment,
+                                   @RequestParam("bundle") String bundle,
+                                   Authentication auth){
+        log.info(id);
+        log.info(comment);
+        log.info(bundle);
+        return response.success("성공", HttpStatus.OK);
+    }
 }

@@ -99,7 +99,7 @@ public class Test {
         log.info(Data.toString());
         return postRepository.uploadPost(Data);
     }*/
-    @PostMapping("test/comment")
+    /*@PostMapping("test/comment")
     @ResponseBody
     public ResponseEntity<?> comment(@RequestParam("id") String id,
                                      @RequestParam("comment") String comment,
@@ -113,5 +113,5 @@ public class Test {
         Comment.setPost(id);
         return postRepository.saveComment(Comment);
 
-    }
+    }*/
 }

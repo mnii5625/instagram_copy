@@ -120,6 +120,8 @@ public class PostRepository {
 
         for(DocumentSnapshot commentDoc : documents) {
             UserRequest.Comment comment = commentDoc.toObject(UserRequest.Comment.class);
+            User user = userRepository.getUserByInsta(comment.getInsta());
+            comment.setProfileImage(user.getProfile_image());
             if(!comment.getBundle().equals("")){
                 List<UserRequest.Comment> replies = getReply(comment.getBundle());
                 comment.setReplies(replies);
@@ -140,6 +142,8 @@ public class PostRepository {
         List<QueryDocumentSnapshot> documents = replySnapShot.get().getDocuments();
         for(DocumentSnapshot replyDoc : documents) {
             UserRequest.Comment comment = replyDoc.toObject(UserRequest.Comment.class);
+            User user = userRepository.getUserByInsta(comment.getInsta());
+            comment.setProfileImage(user.getProfile_image());
             replies.add(comment);
         }
         return replies;
@@ -195,6 +199,7 @@ public class PostRepository {
     }
     public ResponseEntity<?> saveComment(UserRequest.Comment Comment){
         CollectionReference collectionReference = db.collection(COLLECTION_COMMENT);
+        Comment.setBundle(UUID.randomUUID().toString().replaceAll("-","").substring(0, 10));
         collectionReference.document().set(Comment);
         return response.success("성공", HttpStatus.OK);
     }

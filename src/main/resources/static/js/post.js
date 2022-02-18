@@ -338,7 +338,7 @@ function uploadComment(e){
     let comment = textarea.val();
     if(comment !== ""){
         $.ajax({
-            url: 'test/comment',
+            url: '/comment',
             data: {
                 id : id,
                 comment : comment,
