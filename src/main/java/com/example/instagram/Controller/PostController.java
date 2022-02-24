@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
 @Controller
 @Slf4j
@@ -65,7 +66,7 @@ public class PostController {
                                        @RequestParam("Date") Date date,
                                        @RequestParam("insta") String insta,
                                        @RequestParam("n") int n){
-        UserDetails user = (UserDetails) auth.getPrincipal();
+        User user = userService.getUserInfo(auth.getName());
         try{
             if(insta.equals("")){
                 return postRepository.getPost(user.getInsta(), date, n);
@@ -84,18 +85,18 @@ public class PostController {
     @PostMapping("/header/recently")
     @ResponseBody
     public ResponseEntity<?> Recently(Authentication auth){
-        UserDetails user = (UserDetails) auth.getPrincipal();
+        User user = userService.getUserInfo(auth.getName());
         return searchRepository.getRecentlySearch(user.getInsta());
     }
     @PostMapping("/header/recently/delete")
     public ResponseEntity<?> Delete(Authentication auth, @RequestParam("insta") String insta){
-        UserDetails user = (UserDetails)  auth.getPrincipal();
+        User user = userService.getUserInfo(auth.getName());
         log.info(user.getInsta() + " " + insta);
         return searchRepository.delRecentlySearch(user.getInsta(), insta);
     }
     @PostMapping("/header/recently/deleteAll")
     public ResponseEntity<?> DeleteAll(Authentication auth){
-        UserDetails user = (UserDetails) auth.getPrincipal();
+        User user = userService.getUserInfo(auth.getName());
         log.info(user.getInsta());
         return searchRepository.delAllRecentlySearch(user.getInsta());
     }
@@ -147,6 +148,7 @@ public class PostController {
         Comment.setComment(comment);
         Comment.setInsta(user.getInsta());
         Comment.setPost(id);
+        Comment.setBundle(UUID.randomUUID().toString().replaceAll("-","").substring(0, 10));
         return postRepository.saveComment(Comment);
     }
     @PostMapping("reply")
@@ -155,9 +157,13 @@ public class PostController {
                                    @RequestParam("comment") String comment,
                                    @RequestParam("bundle") String bundle,
                                    Authentication auth){
-        log.info(id);
-        log.info(comment);
-        log.info(bundle);
-        return response.success("성공", HttpStatus.OK);
+        User user = userService.getUserInfo(auth.getName());
+        UserRequest.Comment Comment = new UserRequest.Comment();
+        Comment.setComment(comment);
+        Comment.setInsta(user.getInsta());
+        Comment.setPost(id);
+        Comment.setBundle(bundle);
+        Comment.setDepth(1);
+        return postRepository.saveComment(Comment);
     }
 }

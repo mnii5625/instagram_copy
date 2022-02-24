@@ -50,7 +50,7 @@ public class AccountController {
     @PostMapping("/edit")
     @ResponseBody
     public ResponseEntity<?> Edit(Authentication auth, UserRequest.Edit edit){
-        UserDetails user = (UserDetails) auth.getPrincipal();
+        User user = userService.getUserInfo(auth.getName());
         if(userRepository.existInstaId(edit.getInsta())){
             return response.fail("사용할 수 없는 사용자 이름입니다. 다른 이름을 사용하세요.", HttpStatus.BAD_REQUEST);
         }
@@ -84,7 +84,7 @@ public class AccountController {
     @PostMapping("/edit/profileImage")
     @ResponseBody
     public ResponseEntity<?> changeProfileImage(@RequestParam("profile_file_image") MultipartFile file, Authentication auth){
-        UserDetails user = (UserDetails) auth.getPrincipal();
+        User user = userService.getUserInfo(auth.getName());
         return userService.changeProfileImage(user.getInsta(), file);
     }
 }

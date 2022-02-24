@@ -189,7 +189,7 @@ function Drag(e){
 function modal_close(e){
     console.log("클로즈")
 
-    if(page === 0){
+    if(page === 0 || page === 4){
         $('#new_post_icon_select').hide()
         $('#new_post_icon').show();
         $('body').removeAttr('style');
@@ -197,7 +197,9 @@ function modal_close(e){
     }else{
         show_exit(false);
     }
-
+}
+function s(){
+    console.log(page);
 
 }
 function modal_resize(){
@@ -205,7 +207,12 @@ function modal_resize(){
     let window_height = window.innerHeight;
     let side = 0;
     let min = Math.min(window_height, window_width);
-    console.log("min",min);
+    if(window_width- 339 > window_height){
+        side = window_height * 0.6;
+    }else{
+        side = (window_width-339) * 0.6;
+    }
+    /*console.log("min",min);
     if(window_width < 678){
         console.log("1번")
         side = 339;
@@ -215,10 +222,12 @@ function modal_resize(){
     }else{
         console.log("3번")
         side = min*0.6;
-    }
+    }*/
     console.log("side", side)
     $('.modal_image_container').width(side).height(side);
     switch (page){
+        case 4:
+            break;
         case 3:
         case 2:
             $('#filter_canvas_slider').width(side);
@@ -334,7 +343,10 @@ function next(){
             page++;
             break;
         case 3:
+            $("#image_filter").hide()
+            $("#image_upload").show()
             upload();
+            page++;
     }
     console.log(files);
     console.log(page);
@@ -1035,6 +1047,12 @@ function init(){
     $('.drag').remove();
     $('.img_slider_dot').remove();
     $('.img_slider_gallery_img').remove();
+    $('#filter_div').show()
+    $('#filter_div').css('opacity', 0);
+    $('#upload_comment').hide()
+    $('#upload_comment').css('opacity', 1);
+    $('#next_button').html('다음');
+    $('.post_upload_header').eq(2).html('편집');
     files = [];
     order = [];
     page = 0;
@@ -1094,10 +1112,17 @@ function upload(){
         data : formData,
         processData : false,
         contentType : false,
+        beforeSend : function (){
+            $('.modal_image_container').animate({
+                width : $('.modal_image_container').height()
+            },100)
+        },
         success : function (data){
-            console.log("Success");
+            if(data.state === 200){
+                $('#uploading').html('게시물이 공유되었습니다')
+                $('#uploading_text').css('opacity', 1)
+                $('#uploading_img').attr('src', 'http://minstagram.kro.kr/static/images/image/check.gif')
+            }
         }
-
-
     })
 }

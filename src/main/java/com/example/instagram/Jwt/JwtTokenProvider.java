@@ -1,19 +1,14 @@
 package com.example.instagram.Jwt;
 
 
+import com.example.instagram.Entity.Request.UserRequest;
+import com.example.instagram.Entity.Response.CookieUtil;
 import com.example.instagram.Entity.TokenInfo;
-import com.example.instagram.Entity.User;
 import com.example.instagram.Entity.UserDetails;
-import com.example.instagram.Repository.UserRepository;
-import com.example.instagram.Service.UserService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,56 +16,32 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-
 public class JwtTokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer";
-    //private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;              // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;    // 7일
-
-    private UserRepository userRepository;
-    private UserService userService;
-    private RedisTemplate redisTemplate;
 
 
     private final Key key;
+    private final RedisTemplate redisTemplate;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
         byte[] keyBytes = Base64.getEncoder().encode(secretKey.getBytes());
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public TokenInfo generateToken(Authentication authentication) {
-        // 권한 가져오기
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+        String accessToken = setAccessToken(authentication);
         long now = (new Date()).getTime();
-        UserDetails user = (UserDetails)authentication.getPrincipal();
-        log.info(user.toString());
-        // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
-
-        String accessToken = Jwts.builder()
-                .setSubject(user.getInsta())
-                .claim(AUTHORITIES_KEY, authorities)
-                .claim("name", user.getName())
-                .claim("profile_image", user.getProfile_image())
-                .claim("phone", user.getPhone())
-                .claim("email", user.getEmail())
-                .claim("birthday", user.getBirthday())
-                .claim("gender", user.getGender())
-                .setExpiration(accessTokenExpiresIn)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
@@ -84,6 +55,23 @@ public class JwtTokenProvider {
                 .refreshTokenExpirationTime(REFRESH_TOKEN_EXPIRE_TIME)
                 .build();
     }
+    public String setAccessToken(Authentication authentication){
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        long now = (new Date()).getTime();
+        UserDetails user = (UserDetails)authentication.getPrincipal();
+        log.info(user.toString());
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        String accessToken = Jwts.builder()
+                .setSubject(user.getInsta())
+                .claim(AUTHORITIES_KEY, authorities)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+        return accessToken;
+    }
+
     public Authentication getAuthentication(String accessToken){
         Claims claims = parseClaims(accessToken);
         Collection<? extends GrantedAuthority> authorities =
@@ -93,12 +81,6 @@ public class JwtTokenProvider {
         //log.info(claims.toString());
         UserDetails principal = UserDetails.builder()
                 .insta(claims.getSubject())
-                .phone(claims.get("phone", String.class))
-                .email(claims.get("email", String.class))
-                .birthday(claims.get("birthday", String.class))
-                .profile_image(claims.get("profile_image", String.class))
-                .name(claims.get("name", String.class))
-                .gender(claims.get("gender", String.class))
                 .build();
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
@@ -107,15 +89,40 @@ public class JwtTokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
+            log.info("Invalid JWT Token");
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
+            log.info("Expired JWT Token");
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
+            log.info("Unsupported JWT Token");
         } catch (IllegalArgumentException e) {
-            log.info("JWT claims string is empty.", e);
+            log.info("JWT claims string is empty.");
+        }catch (Exception e){
+            log.info("Exception");
         }
         return false;
+    }
+    public String reissueToken(UserRequest.Reissue reissue){
+        return setAccessToken(getAuthentication(reissue.getAccessToken()));
+    }
+    public boolean validateRefreshToken(UserRequest.Reissue reissue){
+        if(!validateToken(reissue.getRefreshToken())){
+            return false;
+        }
+        Authentication authentication = getAuthentication(reissue.getAccessToken());
+        Map hash =  redisTemplate.opsForHash().entries(authentication.getName());
+        String refreshToken = (String) hash.get("RT");
+        if(!refreshToken.equals(reissue.getRefreshToken())){
+            return false;
+        }
+        return true;
+    }
+    public void setJwtCookie(HttpServletResponse response, TokenInfo tokenInfo){
+        CookieUtil.create(response, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
+        CookieUtil.create(response, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
+
+    }
+    public void setJwtAccessCookie(HttpServletResponse response, String accessToken){
+        CookieUtil.create(response, "JWT-ACCESS-TOKEN", "Bearer:" + accessToken, false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
     }
     public Claims parseClaims(String accessToken){
         try {

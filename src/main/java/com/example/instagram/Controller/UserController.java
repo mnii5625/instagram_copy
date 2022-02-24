@@ -15,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -90,6 +87,35 @@ public class UserController {
         follow.setDate(new Date());
         follow.setInsta(user.getInsta());
         return userRepository.unfollow(follow);
+    }
+
+    @PostMapping("/like")
+    @ResponseBody
+    public ResponseEntity<?> like(@RequestParam("id") String id,
+                                  @RequestParam("type") String type,
+                                  Authentication auth){
+        User user = userService.getUserInfo(auth.getName());
+        if(type.equals("post")){
+            return postRepository.updatePostLike(id, user.getInsta());
+        }
+        else if(type.equals("comment")){
+            return postRepository.updateCommentLike(id, user.getInsta());
+        }
+        return response.fail("잘못된 타입입니다", HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("/unlike")
+    @ResponseBody
+    public ResponseEntity<?> unLike(@RequestParam("id") String id,
+                                    @RequestParam("type") String type,
+                                    Authentication auth){
+        User user = userService.getUserInfo(auth.getName());
+        if(type.equals("post")){
+            return postRepository.updatePostUnLike(id, user.getInsta());
+        }
+        else if(type.equals("comment")){
+            return postRepository.updateCommentUnLike(id, user.getInsta());
+        }
+        return response.fail("잘못된 타입입니다", HttpStatus.BAD_REQUEST);
     }
 
 }

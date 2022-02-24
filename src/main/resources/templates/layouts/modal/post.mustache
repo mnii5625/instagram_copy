@@ -86,6 +86,11 @@
         padding: 3px 14px 3px 14px;
         flex-direction: column;
         border-bottom: 1px solid #efefef;
+        overflow: hidden scroll;
+        -ms-overflow-style: none;
+    }
+    #post_content::-webkit-scrollbar{
+        display: none;
     }
     .comment{
         padding: 11px 0;
@@ -166,7 +171,11 @@
     }
     .comment_like_div{
         margin-left: 10px;
-        padding-top:5px
+        padding-top:5px;
+        position: relative;
+    }
+    #m_post_unlike_icon{
+        position: absolute;
     }
 
 
@@ -177,12 +186,29 @@
     let post;
     $(document).ready(function () {
         //post_resize();
-        get_post('3yQFKp37ibxSqkZ1JqBS')
         $(window).resize(post_resize);
         $('#post_next_image_button').on('click', post_next_image)
         $('#post_prev_image_button').on('click', post_prev_image)
         $('#post_textarea').on('input', textarea_resize);
         $('#comment_upload').on('click', upload_comment);
+        $('.comment_reply').on('click', reply_button);
+        $('#m_post_comment_icon').on('click', function(){
+            $('#post_textarea').focus();
+        })
+        $('#m_post_chat_icon').on('click',function(){
+            alert("준비중입니다.")
+        })
+        $('.m_post_like').on('click', m_comment_like);
+        $('.m_post_unlike').on('click', m_comment_unlike);
+        $('#m_post_like_icon').on('click', m_post_like);
+        $('#m_post_unlike_icon').on('click', m_post_unlike);
+        $('#post_background').on('mousedown', function (e){
+            if($('#post_container').has(e.target).length === 0){
+                $('#post_background').hide();
+                $('body').removeAttr('style')
+                initialize();
+            }
+        })
     })
     function get_post(docId){
         $.ajax({
@@ -198,21 +224,28 @@
                 if(response.state === 200){
                     post = response.data;
                     set_post();
+                    $('#post_background').show();
                 }
             }
         })
     }
     function set_post(){
+        $('body').css('overflow', 'hidden')
         post_resize();
         set_post_image();
         set_comment();
         set_like();
         set_time();
     }
-
-
     function initialize(){
-
+        $('#post_slider').children().remove()
+        $('.comment').not(":first").remove()
+        $('#m_post_unlike_icon').hide()
+        $('#m_post_like').html("");
+        $('#post_slider').data('n', 0);
+        $('#post_slider').css('left', 0);
+        $('#post_prev_image_button').hide();
+        $('#post_next_image_button').hide();
     }
     function textarea_resize(){
         $(this).height("18px");
@@ -233,7 +266,7 @@
         let left = $('#post_left');
         if(window_width-500 > window_height){
             let side = window_height * 0.9;
-
+            $('#post_container').css('max-height', side)
             if(post.rate <= 1){
                 left.width(side * post.rate).height(side);
             }else{
@@ -242,6 +275,7 @@
         }
         else{
             let side = (window_width - 500) * 0.9;
+            $('#post_container').css('max-height', side)
             if(post.rate <= 1){
                 left.width(side * post.rate).height(side);
             }else{
@@ -358,7 +392,8 @@
 
     function set_comment(){
         //게시물 내용
-        let clone = $('#clone').clone();
+        let clone = $('#clone').clone(true);
+
             clone.removeAttr('id');
             clone.show();
             clone.find('img').attr('src','http://minstagram.kro.kr/static/images/' + post.profileImage)
@@ -375,6 +410,7 @@
         let comments = post_getAllComments(post.comments);
         for(let comment of comments){
             let clone = $('#clone').clone();
+            clone.data('docId', comment.id);
             clone.removeAttr('id');
             clone.addClass(comment.bundle);
             if(comment.depth === 1){
@@ -391,43 +427,13 @@
                 clone.find('.comment_like').hide();
             }else{
                 clone.find('.comment_like').html('좋아요 ' + comment.like.length + '개');
+                if(comment.like.includes($('#insta').val())){
+                    console.log(comment.like);
+                    clone.find('.m_post_unlike').show();
+                }
             }
             $('#post_content').append(clone);
         }
-        /*for(let comment of post.comments){
-            let clone = $('#clone').clone();
-                clone.removeAttr('id');
-                clone.show();
-                clone.find('img').attr('src','http://minstagram.kro.kr/static/images/' + comment.profileImage);
-                let a = clone.find('#post_insta');
-                    a.attr('href', '/' + comment.insta)
-                    a.html(comment.insta)
-                clone.find('.comment_content').append(comment_tag(comment.comment))
-                clone.find('.comment_time').html(time(comment.date))
-                if(comment.like.length === 0 ){
-                    clone.find('.comment_like').hide();
-                }else{
-                    clone.find('.comment_like').html('좋아요 ' + comment.like.length + '개');
-                }
-            $('#post_content').append(clone);
-            for(let reply of comment.replies){
-                let clone = $('#clone').clone();
-                clone.removeAttr('id');
-                clone.addClass('reply')
-                clone.show();
-                clone.find('img').attr('src','http://minstagram.kro.kr/static/images/' + reply.profileImage);
-                let a = clone.find('#post_insta');
-                a.attr('href', '/' + reply.insta)
-                a.html(reply.insta)
-                clone.find('.comment_content').append(comment_tag(reply.comment))
-                clone.find('.comment_time').html(time(reply.date))
-                if(reply.like.length === 0 ){
-                    clone.find('.comment_like').hide();
-                }else{
-                    clone.find('.comment_like').html('좋아요 ' + reply.like.length + '개');
-                }
-            }
-        }*/
 
     }
     function set_post_image(){
@@ -448,6 +454,9 @@
         }
     }
     function set_like() {
+        if (post.like.includes($('#insta').val())){
+            $('#m_post_unlike_icon').show();
+        }
         if (post.like.length > 1) {
             let postLike = $('#m_post_like')
             let user = post.like[Math.floor(Math.random() * post.like.length)]
@@ -455,9 +464,9 @@
             postLike.html(postLike.html() + "님&nbsp;");
             postLike.append($('<button style="font-weight: bold">여러 명</button>'))
             postLike.html(postLike.html() + "이 좋아합니다");
-        } else if (data.like.length === 1) {
+        } else if (post.like.length === 1) {
             let postLike = $('#m_post_like')
-            postLike.append($('<a style="font-weight: bold" href=/' + data["like"][0] + '>' + data["like"][0] + '</a>'));
+            postLike.append($('<a style="font-weight: bold" href=/' + post["like"][0] + '>' + post["like"][0] + '</a>'));
             postLike.html(postLike.html() + "님이 좋아합니다");
         }
     }
@@ -482,7 +491,20 @@
                     success : function (data){
                         console.log(data)
                         if(data.state === 200){
+                            let clone = $('#clone').clone(true);
+                                clone.removeAttr('id');
+                                clone.addClass(data.data);
+                                clone.addClass('reply');
+                                clone.show();
+                                clone.find('img').attr('src',$('.user_profile_image').attr('src'));
+                            let a = clone.find('.post_insta');
+                            a.attr('href', '/' + $('#insta').val())
+                            a.html($('#insta').val())
+                            clone.find('.comment_content').append(comment_tag(comment))
+                            clone.find('.comment_time').html(time(new Date()))
+                            clone.find('.comment_like').hide();
 
+                            $('#post_content').append(clone);
                         }
                     }
                 })
@@ -498,7 +520,18 @@
                     success : function(data){
                         console.log('성공', data);
                         if(data.state === 200){
-
+                            let clone = $('#clone').clone(true);
+                                clone.removeAttr('id');
+                                clone.addClass(data.data);
+                                clone.show();
+                                clone.find('img').attr('src',$('.user_profile_image').attr('src'));
+                            let a = clone.find('.post_insta');
+                                a.attr('href', '/' + $('#insta').val())
+                                a.html($('#insta').val())
+                                clone.find('.comment_content').append(comment_tag(comment))
+                                clone.find('.comment_time').html(time(new Date()))
+                                clone.find('.comment_like').hide();
+                            $('#post_content').append(clone);
                         }
                     }
                 })
@@ -506,9 +539,96 @@
 
         }
     }
+    function reply_button(){
+        console.log($(this).parents('.comment').attr('class').split(' ')[1])
+        $('#post_textarea').data('bundle', $(this).parents('.comment').attr('class').split(' ')[1])
+        $('#post_textarea').val('@' + $(this).parents('.comment').find('.post_insta').html() + ' ');
+
+    }
+    function m_comment_like(){
+        let comment = $(this).parents('.comment');
+        let docId = comment.data('docId');
+        console.log(comment)
+        console.log(docId)
+        $.ajax({
+            url : '/like',
+            method : 'POST',
+            dataType : 'Json',
+            data : {
+                type : "comment",
+                id : docId
+            },
+            success : function (response){
+                console.log(response);
+                if(response.state === 200){
+                    comment.find('.m_post_unlike').show();
+                }
+
+            }
+        })
+    }
+    function m_comment_unlike(){
+        let comment = $(this).parents('.comment');
+        let docId = comment.data('docId');
+        console.log(comment)
+        console.log(docId)
+        $.ajax({
+            url : '/unlike',
+            method : 'POST',
+            dataType : 'Json',
+            data : {
+                type : "comment",
+                id : docId
+            },
+            success : function (response){
+                console.log(response);
+                if(response.state === 200){
+                    comment.find('.m_post_unlike').hide();
+                }
+            }
+        })
+        return false;
+    }
+    function m_post_like(){
+        let docId = post.id;
+        $.ajax({
+            url:'/like',
+            method: 'POST',
+            dataType : 'JSON',
+            data : {
+                type : "post",
+                id : docId
+            },
+            success : function (response){
+                console.log(response);
+                if(response.state === 200){
+                    $('#m_post_unlike_icon').show();
+                }
+            }
+        })
+    }
+    function m_post_unlike(){
+        let docId = post.id;
+        $.ajax({
+            url:'/unlike',
+            method: 'POST',
+            dataType : 'JSON',
+            data : {
+                type : "post",
+                id : docId
+            },
+            success : function (response){
+                console.log(response);
+                if(response.state === 200){
+                    $('#m_post_unlike_icon').hide();
+                }
+            }
+        })
+        return false;
+    }
 </script>
 
-<div id="post_background">
+<div id="post_background" style="display: none">
     <div id="post_container">
         <div id="post_left">
             <div id="post_slider">
@@ -524,60 +644,39 @@
                 <a id="post_id" href="ming._.i">ming._.i</a>
                 <div><svg aria-label="옵션 더 보기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="1.5"></circle><circle cx="6" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle></svg></div>
             </div>
+
             <div id="post_content">
+                    <div class="comment" id = "clone" style="display: none">
+                        <img src ="">
+                        <div style="flex:1">
+                            <span class="comment_content">
+                                <a class="post_insta" href=""> </a>
+                            </span>
+                            <div >
+                                <span class="comment_time"></span>
+                                <span class="comment_like"></span>
+                                <button class="comment_reply">답글 달기</button>
+                            </div>
+                        </div>
+                        <div class = "comment_like_div" >
+                            <button class="m_post_like">
+                                <svg aria-label="좋아요"  color="#262626" fill="#262626" height="12" role="img" viewBox="0 0 24 24" width="12"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>
+                            </button>
+                            <button class="m_post_unlike" style="position: absolute; display: none">
+                                <svg aria-label="좋아요 취소" style="position: absolute" color="#ed4956" fill="#ed4956" height="12" role="img" viewBox="0 0 48 48" width="12"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg>
+                            </button>
 
-                <!--<div class="comment">
-                    <img src ="http://minstagram.kro.kr/static/images/a2cd68921dd84ac.jpg">
-                    <div>
-                        <span>
-                            <a class="post_insta" href="/ming._.i">ming._.i</a>
-                            <span> 이제는 딸기도 취향별로 사서 막자는데? 글럴까?<br> . <br> .<br>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</span>
-                        </span>
-                        <span style="font-size: 12px; color: #8e8e8e; margin-top: 10px">5일</span>
-                    </div>
-                </div>-->
-
-                <!--<div class="comment">
-                    <img src ="http://minstagram.kro.kr/static/images/a2cd68921dd84ac.jpg">
-                    <div>
-                        <span>
-                            <a class="post_insta" href="/ming._.i">ming._.i</a>
-                        </span>
-                        <div>
-                            <span class="comment_time">5일</span>
-                            <span class="comment_like">좋아요 770개</span>
-                            <button class="comment_reply">답글 달기</button>
                         </div>
                     </div>
-                    <div class = "comment_like_div">
-                        <svg aria-label="좋아요" class="_8-yf5 " color="#262626" fill="#262626" height="12" role="img" viewBox="0 0 24 24" width="12"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>
-                    </div>
-                </div>-->
-                <div class="comment" id = "clone" style="display: none">
-                    <img src ="">
-                    <div style="flex:1">
-                        <span class="comment_content">
-                            <a class="post_insta" href=""> </a>
-                        </span>
-                        <div >
-                            <span class="comment_time"></span>
-                            <span class="comment_like"></span>
-                            <button class="comment_reply">답글 달기</button>
-                        </div>
-                    </div>
-                    <div class = "comment_like_div">
-                        <button>
-                            <svg aria-label="좋아요" class="_8-yf5 " color="#262626" fill="#262626" height="12" role="img" viewBox="0 0 24 24" width="12"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg>
-                        </button>
-                    </div>
-                </div>
+
             </div>
             <div id="post_footer">
                 <div class="m_post_icons" >
                     <div>
-                        <div style="margin-right: 14px"><svg aria-label="좋아요" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg></div>
-                        <div style="margin-right: 14px"><svg aria-label="댓글 달기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20.656 17.008a9.993 9.993 0 10-3.59 3.615L22 22z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path></svg></div>
-                        <div><svg aria-label="게시물 공유" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><line fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" x1="22" x2="9.218" y1="3" y2="10.083"></line><polygon fill="none" points="11.698 20.334 22 3.001 2 3.001 9.218 10.084 11.698 20.334" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></polygon></svg></div>
+                        <button id="m_post_like_icon" style="margin-right: 14px"><svg aria-label="좋아요" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M16.792 3.904A4.989 4.989 0 0121.5 9.122c0 3.072-2.652 4.959-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 014.708-5.218 4.21 4.21 0 013.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 013.679-1.938m0-2a6.04 6.04 0 00-4.797 2.127 6.052 6.052 0 00-4.787-2.127A6.985 6.985 0 00.5 9.122c0 3.61 2.55 5.827 5.015 7.97.283.246.569.494.853.747l1.027.918a44.998 44.998 0 003.518 3.018 2 2 0 002.174 0 45.263 45.263 0 003.626-3.115l.922-.824c.293-.26.59-.519.885-.774 2.334-2.025 4.98-4.32 4.98-7.94a6.985 6.985 0 00-6.708-7.218z"></path></svg></button>
+                        <button id="m_post_unlike_icon" style="display: none"><svg aria-label="좋아요 취소" class="_8-yf5 " color="#ed4956" fill="#ed4956" height="24" role="img" viewBox="0 0 48 48" width="24"><path d="M34.6 3.1c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5s1.1-.2 1.6-.5c1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg></button>
+                        <button id="m_post_comment_icon"style="margin-right: 14px"><svg aria-label="댓글 달기" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><path d="M20.656 17.008a9.993 9.993 0 10-3.59 3.615L22 22z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+                        <button id="m_post_chat_icon"><svg aria-label="게시물 공유" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><line fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="2" x1="22" x2="9.218" y1="3" y2="10.083"></line><polygon fill="none" points="11.698 20.334 22 3.001 2 3.001 9.218 10.084 11.698 20.334" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></polygon></svg></button>
                     </div>
                     <div>
                         <svg aria-label="저장" class="_8-yf5 " color="#262626" fill="#262626" height="24" role="img" viewBox="0 0 24 24" width="24"><polygon fill="none" points="20 21 12 13.44 4 21 4 3 20 3 20 21" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon></svg>

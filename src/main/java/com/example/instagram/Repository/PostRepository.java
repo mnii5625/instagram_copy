@@ -27,10 +27,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Repository
@@ -122,6 +120,7 @@ public class PostRepository {
             UserRequest.Comment comment = commentDoc.toObject(UserRequest.Comment.class);
             User user = userRepository.getUserByInsta(comment.getInsta());
             comment.setProfileImage(user.getProfile_image());
+            comment.setId(commentDoc.getId());
             if(!comment.getBundle().equals("")){
                 List<UserRequest.Comment> replies = getReply(comment.getBundle());
                 comment.setReplies(replies);
@@ -144,6 +143,7 @@ public class PostRepository {
             UserRequest.Comment comment = replyDoc.toObject(UserRequest.Comment.class);
             User user = userRepository.getUserByInsta(comment.getInsta());
             comment.setProfileImage(user.getProfile_image());
+            comment.setId(replyDoc.getId());
             replies.add(comment);
         }
         return replies;
@@ -199,10 +199,87 @@ public class PostRepository {
     }
     public ResponseEntity<?> saveComment(UserRequest.Comment Comment){
         CollectionReference collectionReference = db.collection(COLLECTION_COMMENT);
-        Comment.setBundle(UUID.randomUUID().toString().replaceAll("-","").substring(0, 10));
         collectionReference.document().set(Comment);
-        return response.success("성공", HttpStatus.OK);
+        return response.success(Comment.getBundle(), "성공", HttpStatus.OK);
     }
+    public ResponseEntity<?> updateCommentLike(String docId, String insta){
+        try {
+            DocumentReference document = db.collection(COLLECTION_COMMENT).document(docId);
+            ApiFuture<Void> futureTransaction =  db.runTransaction( transaction -> {
+                DocumentSnapshot snapshot = transaction.get(document).get();
+                UserRequest.Comment comment = snapshot.toObject(UserRequest.Comment.class);
+                List<String> likeList = comment.getLike();
+                log.info(likeList.toString());
+                likeList.add(insta);
+                transaction.update(document, "like", likeList);
+                return null;
+            });
+            return response.success("성공", HttpStatus.OK);
+        }catch (Exception e){
+            return response.fail("좋아요 업데이트 실패 ", HttpStatus.BAD_REQUEST);
+
+        }
+
+    }
+    public ResponseEntity<?> updateCommentUnLike(String docId, String insta){
+        try {
+            DocumentReference document = db.collection(COLLECTION_COMMENT).document(docId);
+            ApiFuture<Void> futureTransaction =  db.runTransaction( transaction -> {
+                DocumentSnapshot snapshot = transaction.get(document).get();
+                UserRequest.Comment comment = snapshot.toObject(UserRequest.Comment.class);
+                List<String> likeList = comment.getLike();
+                if(likeList.contains(insta)){
+                    likeList.remove(insta);
+                }
+                transaction.update(document, "like", likeList);
+                return null;
+            });
+            return response.success("성공", HttpStatus.OK);
+        }catch (Exception e){
+            return response.fail("좋아요 업데이트 실패 ", HttpStatus.BAD_REQUEST);
+
+        }
+
+    }
+    public ResponseEntity<?> updatePostLike(String docId, String insta){
+        try {
+            DocumentReference document = db.collection(COLLECTION_POST).document(docId);
+            ApiFuture<Void> futureTransaction =  db.runTransaction( transaction -> {
+                DocumentSnapshot snapshot = transaction.get(document).get();
+                UserRequest.Post post = snapshot.toObject(UserRequest.Post.class);
+                List<String> likeList = post.getLike();
+                log.info(likeList.toString());
+                likeList.add(insta);
+                transaction.update(document, "like", likeList);
+                return null;
+            });
+            return response.success("성공", HttpStatus.OK);
+        }catch (Exception e){
+            return response.fail("좋아요 업데이트 실패 ", HttpStatus.BAD_REQUEST);
+
+        }
+    }
+    public ResponseEntity<?> updatePostUnLike(String docId, String insta){
+        try {
+            DocumentReference document = db.collection(COLLECTION_POST).document(docId);
+            ApiFuture<Void> futureTransaction =  db.runTransaction( transaction -> {
+                DocumentSnapshot snapshot = transaction.get(document).get();
+                UserRequest.Post post = snapshot.toObject(UserRequest.Post.class);
+                List<String> likeList = post.getLike();
+                log.info(likeList.toString());
+                if(likeList.contains(insta)){
+                    likeList.remove(insta);
+                }
+                transaction.update(document, "like", likeList);
+                return null;
+            });
+            return response.success("성공", HttpStatus.OK);
+        }catch (Exception e){
+            return response.fail("좋아요 업데이트 실패 ", HttpStatus.BAD_REQUEST);
+
+        }
+    }
+
     public File convert(MultipartFile multipartFile) throws IOException {
         File file = new File(multipartFile.getOriginalFilename());
         file.createNewFile();

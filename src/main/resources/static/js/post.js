@@ -6,6 +6,9 @@ $(document).ready(function () {
     $('.post_right_button').on('click', image_right_slide);
     $('.post_left_button').on('click', image_left_slide);
     $('.post_write_comment_button').on('click', uploadComment);
+    $('.post_like_icon').on('click', post_like);
+    $('.post_unlike_icon').on('click', post_unlike);
+    $('.post_comment_icon').on('click', show_post);
 });
 function Posts(n, insta, date) {
     $.ajax({
@@ -268,6 +271,7 @@ function setP(data){
         clone.find('.post_user_img').attr('src', "http://minstagram.kro.kr/static/images/" + data.profileImage);
         clone.find('.post_user_img').src = 'http://minstagram.kro.kr/static/images/' + data.profileImage;
         clone.find('.post_name').html(data.insta);
+        clone.find('.post_name').attr('href', '/'+data.insta);
 
         let post_images = clone.find('.post_images')
 
@@ -290,9 +294,7 @@ function setP(data){
         let input = clone.find('input');
             input.attr('max', data.images.length-1);
         if(data.like.includes($('#insta').val())){
-            clone.find('.post_like_icon').children('svg').css({
-                fill : '#ed4956'
-            })
+            clone.find('.post_unlike_icon').show();
         }
         if(data.like.length > 1){
             let postLike = clone.find('.post_like');
@@ -360,5 +362,48 @@ function uploadComment(e){
         })
     }
 }
-
+function post_like(){
+    let post = $(this).parents('.post')
+    let docId = post.data('id');
+    $.ajax({
+        url:'/like',
+        method: 'POST',
+        dataType : 'JSON',
+        data : {
+            type : "post",
+            id : docId
+        },
+        success : function (response){
+            console.log(response);
+            if(response.state === 200){
+                post.find('.post_unlike_icon').show();
+            }
+        }
+    })
+}
+function post_unlike(){
+    let post = $(this).parents('.post')
+    let docId = post.data('id');
+    $.ajax({
+        url:'/unlike',
+        method: 'POST',
+        dataType : 'JSON',
+        data : {
+            type : "post",
+            id : docId
+        },
+        success : function (response){
+            console.log(response);
+            if(response.state === 200){
+                post.find('.post_unlike_icon').hide();
+            }
+        }
+    })
+    return false;
+}
+function show_post(){
+    let post = $(this).parents('.post')
+    let docId = post.data('id');
+    get_post(docId);
+}
 

@@ -69,30 +69,6 @@ public class UserService {
         return user;
     }
 
-    public ResponseEntity<?> login(UserRequest.Login login) {
-        UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
-        try {
-            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-            log.info("authenticatiton : " + authentication.toString());
-            log.info("authentication get name: " + authentication.getName());
-            TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-            redisTemplate.opsForValue()
-                    .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-            //headers.set("Authorization", tokenInfo.getGrantType() + " " + tokenInfo.getAccessToken());
-
-            return response.success(
-                    tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
-        } catch (InternalAuthenticationServiceException e) {
-            log.info(e.toString());
-            return response.fail(
-                    "입력한 사용자 이름을 사용하는 계정을 찾을 수 없습니다. 사용자 이름을 확인하고 다시 시도하세요.", HttpStatus.UNAUTHORIZED);
-        } catch (BadCredentialsException e) {
-            log.info(e.toString());
-            return response.fail(
-                    "잘못된 비밀번호입니다. 다시 확인하세요.", HttpStatus.UNAUTHORIZED);
-        }
-    }
-
     public ResponseEntity<?> login(UserRequest.Login login, HttpServletResponse res){
         UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
 
@@ -112,8 +88,9 @@ public class UserService {
            /*redisTemplate.opsForValue()
                     .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);*/
 
-            CookieUtil.create(res, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
-            CookieUtil.create(res, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
+            /*CookieUtil.create(res, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
+            CookieUtil.create(res, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");*/
+            jwtTokenProvider.setJwtCookie(res, tokenInfo);
             return response.success(
                     tokenInfo, "로그인에 성공했습니다.", HttpStatus.OK);
         } catch (InternalAuthenticationServiceException e) {
@@ -126,6 +103,7 @@ public class UserService {
                     "잘못된 비밀번호입니다. 다시 확인하세요.", HttpStatus.UNAUTHORIZED);
         }
     }
+
 
     public ResponseEntity<?> logout(UserRequest.Logout logout){
         if(!jwtTokenProvider.validateToken(logout.getAccessToken())){
@@ -146,11 +124,16 @@ public class UserService {
             return response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
         Authentication authentication = jwtTokenProvider.getAuthentication(reissue.getAccessToken());
-        String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        log.info("authentication.getName()" + authentication.getName());
+        //String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + authentication.getName());
+        Map user = redisTemplate.opsForHash().entries(authentication.getName());
+        String refreshToken = (String) user.get("RT");
+        log.info("refreshToken : " + refreshToken);
         if (!refreshToken.equals(reissue.getRefreshToken())) {
             return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
         }
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
 

@@ -73,6 +73,7 @@
     width: 36px;
     height: 36px;
     border: 2px solid white;
+    object-fit: cover;
 }
 .post_name{
     font-size: 14px;
@@ -152,6 +153,11 @@
     width: 24px;
     height: 24px;
     margin-right: 15px;
+}
+.post_unlike_icon{
+    width: 24px;
+    height: 24px;
+    position: absolute;
 }
 .post_comment_icon{
     width: 24px;

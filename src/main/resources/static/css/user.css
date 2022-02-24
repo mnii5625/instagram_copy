@@ -20,6 +20,7 @@
     height: 150px;
     border-radius: 50%;
     margin: 0 90px 0 50px;
+    object-fit: cover;
 }
 .user_info{
     flex-direction: column;

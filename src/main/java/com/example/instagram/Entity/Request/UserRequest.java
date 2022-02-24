@@ -45,6 +45,11 @@ public class UserRequest {
     public static class Reissue{
         private String accessToken;
         private String refreshToken;
+        public Reissue(){}
+        public Reissue(String accessToken, String refreshToken){
+            this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
+        }
     }
 
     @Getter
@@ -57,6 +62,7 @@ public class UserRequest {
     @Getter
     @Setter
     public static class Comment{
+        private String id;
         private String bundle = "";
         private String comment;
         private int depth;

@@ -1,6 +1,8 @@
 package com.example.instagram.Jwt;
 
+import com.example.instagram.Entity.Request.UserRequest;
 import com.example.instagram.Entity.Response.CookieUtil;
+import com.example.instagram.Entity.TokenInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,8 +17,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -30,19 +35,26 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = resolveToken((HttpServletRequest) request);
+        String accessToken = resolveAccessToken((HttpServletRequest) request);
+        String refreshToken = resolveRefreshToken((HttpServletRequest) request);
+        UserRequest.Reissue reissue = new UserRequest.Reissue(accessToken, refreshToken);
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            String isLogout = (String)redisTemplate.opsForValue().get(token);
-            if (ObjectUtils.isEmpty(isLogout)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        if(accessToken != null){
+            if(jwtTokenProvider.validateToken(accessToken)){
+                Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            else if(jwtTokenProvider.validateRefreshToken(reissue)){
+                String newAccessToken = jwtTokenProvider.reissueToken(reissue);
+                jwtTokenProvider.setJwtAccessCookie((HttpServletResponse) response, newAccessToken);
+                Authentication authentication = jwtTokenProvider.getAuthentication(newAccessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
         chain.doFilter(request, response);
     }
 
-    private String resolveToken(HttpServletRequest request) throws UnsupportedEncodingException {
+    private String resolveAccessToken(HttpServletRequest request) throws UnsupportedEncodingException {
         // APP
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TYPE)) {
@@ -54,6 +66,19 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             return bearerToken.substring(7);
         }
             return null;
+    }
+    private String resolveRefreshToken(HttpServletRequest request) throws UnsupportedEncodingException {
+        // APP
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TYPE)) {
+            return bearerToken.substring(7);
+        }
+        // WEB
+        bearerToken = CookieUtil.getCookie(request, "JWT-REFRESH-TOKEN");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_TYPE)) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
 }

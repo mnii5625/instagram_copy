@@ -395,3 +395,13 @@
     align-items: center;
     border-top: 1px solid #dbdbdb;
 }
+#uploading_img{
+    width: 96px;
+    height: 96px;
+    margin-bottom: 10px;
+}
+#uploading_text{
+    font-size: 24px;
+    color: #a8a8a8;
+    opacity: 0;
+}
