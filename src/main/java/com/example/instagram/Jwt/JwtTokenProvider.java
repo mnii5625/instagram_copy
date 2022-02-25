@@ -117,12 +117,12 @@ public class JwtTokenProvider {
         return true;
     }
     public void setJwtCookie(HttpServletResponse response, TokenInfo tokenInfo){
-        CookieUtil.create(response, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
-        CookieUtil.create(response, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
+        CookieUtil.create(response, "JWT-ACCESS-TOKEN", "Bearer:" + tokenInfo.getAccessToken(), false, 7 * 24 * 60 * 60);
+        CookieUtil.create(response, "JWT-REFRESH-TOKEN", "Bearer:" + tokenInfo.getRefreshToken(), false, 7 * 24 * 60 * 60);
 
     }
     public void setJwtAccessCookie(HttpServletResponse response, String accessToken){
-        CookieUtil.create(response, "JWT-ACCESS-TOKEN", "Bearer:" + accessToken, false, 7 * 24 * 60 * 60, "minstagram.kro.kr");
+        CookieUtil.create(response, "JWT-ACCESS-TOKEN", "Bearer:" + accessToken, false, 7 * 24 * 60 * 60);
     }
     public Claims parseClaims(String accessToken){
         try {

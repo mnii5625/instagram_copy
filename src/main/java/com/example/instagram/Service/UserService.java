@@ -119,27 +119,6 @@ public class UserService {
         return response.success("로그아웃 되었습니다.");
     }
 
-    public ResponseEntity<?> reissue(UserRequest.Reissue reissue) {
-        if (!jwtTokenProvider.validateToken((reissue.getRefreshToken()))) {
-            return response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
-        }
-        Authentication authentication = jwtTokenProvider.getAuthentication(reissue.getAccessToken());
-        log.info("authentication.getName()" + authentication.getName());
-        //String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + authentication.getName());
-        Map user = redisTemplate.opsForHash().entries(authentication.getName());
-        String refreshToken = (String) user.get("RT");
-        log.info("refreshToken : " + refreshToken);
-        if (!refreshToken.equals(reissue.getRefreshToken())) {
-            return response.fail("Refresh Token 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
-        }
-        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-
-        redisTemplate.opsForValue()
-                .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(), tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-
-        return response.success(tokenInfo, "Token 정보가 갱신되었습니다.", HttpStatus.OK);
-    }
-
     public ResponseEntity<?> changeProfileImage(String insta, MultipartFile file){
         try {
             String[] splitFileName = file.getOriginalFilename().split("\\.");

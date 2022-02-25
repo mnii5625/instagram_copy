@@ -25,6 +25,7 @@ $(document).ready(function () {
         $('.modal_background_post').show();
         $('body').css('overflow', 'hidden');
     })
+    $('#logout').on('click', logout);
 });
 
 function search_focus(){
@@ -200,6 +201,21 @@ function delRecentlyAll(e){
                 console.log(response)
                 $(e).parent().next().children('a').remove();
                 $(e).parent().next().children().first().css("display","flex");
+            }
+        }
+    })
+}
+
+function logout(e){
+    $.ajax({
+        url : "/user/logout",
+        type : "POST",
+        data : {},
+        dataType : "JSON",
+        success : function (response){
+            console.log(response)
+            if(response.state === 200 ){
+                window.location.href = '/';
             }
         }
     })

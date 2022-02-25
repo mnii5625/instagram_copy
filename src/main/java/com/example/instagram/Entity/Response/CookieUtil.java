@@ -6,8 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 
 public class CookieUtil {
+    static String domain = "minstagram.kro.kr";
     public static void create(
-            HttpServletResponse httpServletResponse, String name, String value, Boolean secure, Integer maxAge, String domain) {
+            HttpServletResponse httpServletResponse, String name, String value, Boolean secure, Integer maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setSecure(secure);
         cookie.setHttpOnly(true);
@@ -22,7 +23,7 @@ public class CookieUtil {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
-        cookie.setDomain("localhost");
+        cookie.setDomain(domain);
         httpServletResponse.addCookie(cookie);
     }
 
