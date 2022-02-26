@@ -1,7 +1,8 @@
 # instagram_copy
-인스타그램 웹 카피 프로젝트 입니다.
-http://minstagram.kro.kr/
+인스타그램 웹 카피 프로젝트 입니다.  
+http://minstagram.kro.kr/  
 mnii5625@gmail.com
+
 ---
 
 Framework : Spring Boot   
