@@ -8,7 +8,7 @@ mnii5625@gmail.com
 Framework : Spring Boot   
 DataBase : Firebase Firestore   
 Session : redis   
-Authentication : Json Web Token
+Authentication : Json Web Token  
 HTML, javascript, jQuery, css, java, coolSMS, GoogleSMTP
 
 ---
