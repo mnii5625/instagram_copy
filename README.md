@@ -26,6 +26,3 @@ HTML, javascript, jQuery, css, java, coolSMS, GoogleSMTP
   + 좋아요
   + 댓글, 답글 달기 
 
----
-### 데이터베이스 구조
-![DB](https://user-images.githubusercontent.com/97099065/155853216-59353c71-8004-4caa-83c6-e3a585288af3.png)
